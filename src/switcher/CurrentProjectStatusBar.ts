@@ -14,7 +14,7 @@ export class CurrentProjectStatusBar implements vscode.Disposable {
     private readonly resolver: StatusResolver,
     private readonly currentPath: () => string | undefined,
   ) {
-    this.item.command = 'projectOrganizer.quickSwitch';
+    this.item.command = 'projectsHub.quickSwitch';
     this.update();
   }
 

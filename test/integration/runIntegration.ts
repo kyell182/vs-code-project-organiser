@@ -15,7 +15,7 @@ async function main(): Promise<void> {
     extensionTestsPath: path.join(root, 'out', 'test', 'integration', 'smoke'),
     vscodeExecutablePath: process.env.VSCODE_EXECUTABLE,
     // An own profile folder in the temp dir: the default one lives next to the project and breaks on paths with spaces.
-    launchArgs: ['--disable-extensions', `--user-data-dir=${path.join(os.tmpdir(), 'project-organizer-test')}`],
+    launchArgs: ['--disable-extensions', `--user-data-dir=${path.join(os.tmpdir(), 'projects-hub-test')}`],
   });
 }
 

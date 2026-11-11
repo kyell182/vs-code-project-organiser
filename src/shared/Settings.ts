@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-const SECTION = 'projectOrganizer';
+const SECTION = 'projectsHub';
 const DEFAULT_INACTIVE_AFTER_DAYS = 30;
 
 export class Settings {

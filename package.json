@@ -1,10 +1,15 @@
 {
-  "name": "project-organizer",
-  "displayName": "Project Organizer",
+  "name": "projects-hub",
+  "displayName": "Projects Hub",
   "description": "Save projects, organize them in groups, label them with colored tags and see their status at a glance. Open any project with one click.",
   "version": "0.2.0",
-  "publisher": "your-publisher-id",
+  "publisher": "kyell182",
   "license": "MIT",
+  "icon": "media/icon.png",
+  "galleryBanner": {
+    "color": "#2b3a8f",
+    "theme": "dark"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/kyell182/vs-code-project-organiser.git"
@@ -30,114 +35,114 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "projectOrganizer",
-          "title": "Project Organizer",
+          "id": "projectsHub",
+          "title": "Projects Hub",
           "icon": "media/activity-icon.svg"
         }
       ]
     },
     "views": {
-      "projectOrganizer": [
+      "projectsHub": [
         {
-          "id": "projectOrganizer.projects",
+          "id": "projectsHub.projects",
           "name": "Projects"
         }
       ]
     },
     "viewsWelcome": [
       {
-        "view": "projectOrganizer.projects",
-        "contents": "No saved projects yet.\n[Save Current Project](command:projectOrganizer.saveCurrentProject)\n[Add Project Folder](command:projectOrganizer.addProjectFolder)"
+        "view": "projectsHub.projects",
+        "contents": "No saved projects yet.\n[Save Current Project](command:projectsHub.saveCurrentProject)\n[Add Project Folder](command:projectsHub.addProjectFolder)"
       }
     ],
     "commands": [
-      { "command": "projectOrganizer.saveCurrentProject", "title": "Save Current Project", "category": "Project Organizer", "icon": "$(save)" },
-      { "command": "projectOrganizer.addProjectFolder", "title": "Add Project Folder...", "category": "Project Organizer", "icon": "$(add)" },
-      { "command": "projectOrganizer.openProject", "title": "Open Project", "category": "Project Organizer" },
-      { "command": "projectOrganizer.openProjectInNewWindow", "title": "Open in New Window", "category": "Project Organizer", "icon": "$(empty-window)" },
-      { "command": "projectOrganizer.renameProject", "title": "Rename Project", "category": "Project Organizer" },
-      { "command": "projectOrganizer.removeProject", "title": "Remove Project", "category": "Project Organizer", "icon": "$(trash)" },
-      { "command": "projectOrganizer.togglePin", "title": "Pin / Unpin", "category": "Project Organizer", "icon": "$(pin)" },
-      { "command": "projectOrganizer.setStatus", "title": "Set Status...", "category": "Project Organizer" },
-      { "command": "projectOrganizer.assignGroup", "title": "Move to Group...", "category": "Project Organizer" },
-      { "command": "projectOrganizer.editTags", "title": "Edit Tags...", "category": "Project Organizer", "icon": "$(tag)" },
-      { "command": "projectOrganizer.editNote", "title": "Edit Note...", "category": "Project Organizer", "icon": "$(note)" },
-      { "command": "projectOrganizer.createGroup", "title": "Create Group", "category": "Project Organizer", "icon": "$(new-folder)" },
-      { "command": "projectOrganizer.renameGroup", "title": "Rename Group", "category": "Project Organizer" },
-      { "command": "projectOrganizer.recolorGroup", "title": "Change Group Color", "category": "Project Organizer" },
-      { "command": "projectOrganizer.deleteGroup", "title": "Delete Group", "category": "Project Organizer", "icon": "$(trash)" },
-      { "command": "projectOrganizer.createTag", "title": "Create Tag", "category": "Project Organizer" },
-      { "command": "projectOrganizer.renameTag", "title": "Rename Tag", "category": "Project Organizer" },
-      { "command": "projectOrganizer.recolorTag", "title": "Change Tag Color", "category": "Project Organizer" },
-      { "command": "projectOrganizer.deleteTag", "title": "Delete Tag", "category": "Project Organizer", "icon": "$(trash)" },
-      { "command": "projectOrganizer.switchLayout", "title": "Switch View (Group / Tag / Status)", "category": "Project Organizer", "icon": "$(list-tree)" },
-      { "command": "projectOrganizer.manageStatuses", "title": "Manage Custom Statuses...", "category": "Project Organizer", "icon": "$(symbol-color)" },
-      { "command": "projectOrganizer.openBoard", "title": "Open Project Board", "category": "Project Organizer", "icon": "$(layout)" },
-      { "command": "projectOrganizer.quickSwitch", "title": "Quick Switch Project", "category": "Project Organizer", "icon": "$(search)" }
+      { "command": "projectsHub.saveCurrentProject", "title": "Save Current Project", "category": "Projects Hub", "icon": "$(save)" },
+      { "command": "projectsHub.addProjectFolder", "title": "Add Project Folder...", "category": "Projects Hub", "icon": "$(add)" },
+      { "command": "projectsHub.openProject", "title": "Open Project", "category": "Projects Hub" },
+      { "command": "projectsHub.openProjectInNewWindow", "title": "Open in New Window", "category": "Projects Hub", "icon": "$(empty-window)" },
+      { "command": "projectsHub.renameProject", "title": "Rename Project", "category": "Projects Hub" },
+      { "command": "projectsHub.removeProject", "title": "Remove Project", "category": "Projects Hub", "icon": "$(trash)" },
+      { "command": "projectsHub.togglePin", "title": "Pin / Unpin", "category": "Projects Hub", "icon": "$(pin)" },
+      { "command": "projectsHub.setStatus", "title": "Set Status...", "category": "Projects Hub" },
+      { "command": "projectsHub.assignGroup", "title": "Move to Group...", "category": "Projects Hub" },
+      { "command": "projectsHub.editTags", "title": "Edit Tags...", "category": "Projects Hub", "icon": "$(tag)" },
+      { "command": "projectsHub.editNote", "title": "Edit Note...", "category": "Projects Hub", "icon": "$(note)" },
+      { "command": "projectsHub.createGroup", "title": "Create Group", "category": "Projects Hub", "icon": "$(new-folder)" },
+      { "command": "projectsHub.renameGroup", "title": "Rename Group", "category": "Projects Hub" },
+      { "command": "projectsHub.recolorGroup", "title": "Change Group Color", "category": "Projects Hub" },
+      { "command": "projectsHub.deleteGroup", "title": "Delete Group", "category": "Projects Hub", "icon": "$(trash)" },
+      { "command": "projectsHub.createTag", "title": "Create Tag", "category": "Projects Hub" },
+      { "command": "projectsHub.renameTag", "title": "Rename Tag", "category": "Projects Hub" },
+      { "command": "projectsHub.recolorTag", "title": "Change Tag Color", "category": "Projects Hub" },
+      { "command": "projectsHub.deleteTag", "title": "Delete Tag", "category": "Projects Hub", "icon": "$(trash)" },
+      { "command": "projectsHub.switchLayout", "title": "Switch View (Group / Tag / Status)", "category": "Projects Hub", "icon": "$(list-tree)" },
+      { "command": "projectsHub.manageStatuses", "title": "Manage Custom Statuses...", "category": "Projects Hub", "icon": "$(symbol-color)" },
+      { "command": "projectsHub.openBoard", "title": "Open Project Board", "category": "Projects Hub", "icon": "$(layout)" },
+      { "command": "projectsHub.quickSwitch", "title": "Quick Switch Project", "category": "Projects Hub", "icon": "$(search)" }
     ],
     "keybindings": [
       {
-        "command": "projectOrganizer.quickSwitch",
+        "command": "projectsHub.quickSwitch",
         "key": "ctrl+alt+p",
         "mac": "cmd+alt+p"
       }
     ],
     "menus": {
       "view/title": [
-        { "command": "projectOrganizer.openBoard", "when": "view == projectOrganizer.projects", "group": "navigation@0" },
-        { "command": "projectOrganizer.quickSwitch", "when": "view == projectOrganizer.projects", "group": "navigation@1" },
-        { "command": "projectOrganizer.saveCurrentProject", "when": "view == projectOrganizer.projects", "group": "navigation@2" },
-        { "command": "projectOrganizer.createGroup", "when": "view == projectOrganizer.projects", "group": "navigation@3" },
-        { "command": "projectOrganizer.switchLayout", "when": "view == projectOrganizer.projects", "group": "navigation@4" },
-        { "command": "projectOrganizer.addProjectFolder", "when": "view == projectOrganizer.projects", "group": "more@1" },
-        { "command": "projectOrganizer.createTag", "when": "view == projectOrganizer.projects", "group": "more@2" },
-        { "command": "projectOrganizer.manageStatuses", "when": "view == projectOrganizer.projects", "group": "more@3" }
+        { "command": "projectsHub.openBoard", "when": "view == projectsHub.projects", "group": "navigation@0" },
+        { "command": "projectsHub.quickSwitch", "when": "view == projectsHub.projects", "group": "navigation@1" },
+        { "command": "projectsHub.saveCurrentProject", "when": "view == projectsHub.projects", "group": "navigation@2" },
+        { "command": "projectsHub.createGroup", "when": "view == projectsHub.projects", "group": "navigation@3" },
+        { "command": "projectsHub.switchLayout", "when": "view == projectsHub.projects", "group": "navigation@4" },
+        { "command": "projectsHub.addProjectFolder", "when": "view == projectsHub.projects", "group": "more@1" },
+        { "command": "projectsHub.createTag", "when": "view == projectsHub.projects", "group": "more@2" },
+        { "command": "projectsHub.manageStatuses", "when": "view == projectsHub.projects", "group": "more@3" }
       ],
       "view/item/context": [
-        { "command": "projectOrganizer.openProjectInNewWindow", "when": "viewItem =~ /^project/", "group": "inline@1" },
-        { "command": "projectOrganizer.togglePin", "when": "viewItem =~ /^project/", "group": "inline@2" },
-        { "command": "projectOrganizer.openProjectInNewWindow", "when": "viewItem =~ /^project/", "group": "1_open@1" },
-        { "command": "projectOrganizer.setStatus", "when": "viewItem =~ /^project/", "group": "2_organize@1" },
-        { "command": "projectOrganizer.assignGroup", "when": "viewItem =~ /^project/", "group": "2_organize@2" },
-        { "command": "projectOrganizer.editTags", "when": "viewItem =~ /^project/", "group": "2_organize@3" },
-        { "command": "projectOrganizer.editNote", "when": "viewItem =~ /^project/", "group": "2_organize@4" },
-        { "command": "projectOrganizer.togglePin", "when": "viewItem =~ /^project/", "group": "2_organize@5" },
-        { "command": "projectOrganizer.renameProject", "when": "viewItem =~ /^project/", "group": "3_edit@1" },
-        { "command": "projectOrganizer.removeProject", "when": "viewItem =~ /^project/", "group": "3_edit@2" },
-        { "command": "projectOrganizer.renameGroup", "when": "viewItem == group", "group": "1_edit@1" },
-        { "command": "projectOrganizer.recolorGroup", "when": "viewItem == group", "group": "1_edit@2" },
-        { "command": "projectOrganizer.deleteGroup", "when": "viewItem == group", "group": "1_edit@3" },
-        { "command": "projectOrganizer.renameTag", "when": "viewItem == tag", "group": "1_edit@1" },
-        { "command": "projectOrganizer.recolorTag", "when": "viewItem == tag", "group": "1_edit@2" },
-        { "command": "projectOrganizer.deleteTag", "when": "viewItem == tag", "group": "1_edit@3" }
+        { "command": "projectsHub.openProjectInNewWindow", "when": "viewItem =~ /^project/", "group": "inline@1" },
+        { "command": "projectsHub.togglePin", "when": "viewItem =~ /^project/", "group": "inline@2" },
+        { "command": "projectsHub.openProjectInNewWindow", "when": "viewItem =~ /^project/", "group": "1_open@1" },
+        { "command": "projectsHub.setStatus", "when": "viewItem =~ /^project/", "group": "2_organize@1" },
+        { "command": "projectsHub.assignGroup", "when": "viewItem =~ /^project/", "group": "2_organize@2" },
+        { "command": "projectsHub.editTags", "when": "viewItem =~ /^project/", "group": "2_organize@3" },
+        { "command": "projectsHub.editNote", "when": "viewItem =~ /^project/", "group": "2_organize@4" },
+        { "command": "projectsHub.togglePin", "when": "viewItem =~ /^project/", "group": "2_organize@5" },
+        { "command": "projectsHub.renameProject", "when": "viewItem =~ /^project/", "group": "3_edit@1" },
+        { "command": "projectsHub.removeProject", "when": "viewItem =~ /^project/", "group": "3_edit@2" },
+        { "command": "projectsHub.renameGroup", "when": "viewItem == group", "group": "1_edit@1" },
+        { "command": "projectsHub.recolorGroup", "when": "viewItem == group", "group": "1_edit@2" },
+        { "command": "projectsHub.deleteGroup", "when": "viewItem == group", "group": "1_edit@3" },
+        { "command": "projectsHub.renameTag", "when": "viewItem == tag", "group": "1_edit@1" },
+        { "command": "projectsHub.recolorTag", "when": "viewItem == tag", "group": "1_edit@2" },
+        { "command": "projectsHub.deleteTag", "when": "viewItem == tag", "group": "1_edit@3" }
       ],
       "commandPalette": [
-        { "command": "projectOrganizer.openProject", "when": "false" },
-        { "command": "projectOrganizer.openProjectInNewWindow", "when": "false" },
-        { "command": "projectOrganizer.renameProject", "when": "false" },
-        { "command": "projectOrganizer.removeProject", "when": "false" },
-        { "command": "projectOrganizer.togglePin", "when": "false" },
-        { "command": "projectOrganizer.setStatus", "when": "false" },
-        { "command": "projectOrganizer.assignGroup", "when": "false" },
-        { "command": "projectOrganizer.editTags", "when": "false" },
-        { "command": "projectOrganizer.editNote", "when": "false" },
-        { "command": "projectOrganizer.recolorGroup", "when": "false" },
-        { "command": "projectOrganizer.renameGroup", "when": "false" },
-        { "command": "projectOrganizer.deleteGroup", "when": "false" },
-        { "command": "projectOrganizer.renameTag", "when": "false" },
-        { "command": "projectOrganizer.recolorTag", "when": "false" },
-        { "command": "projectOrganizer.deleteTag", "when": "false" }
+        { "command": "projectsHub.openProject", "when": "false" },
+        { "command": "projectsHub.openProjectInNewWindow", "when": "false" },
+        { "command": "projectsHub.renameProject", "when": "false" },
+        { "command": "projectsHub.removeProject", "when": "false" },
+        { "command": "projectsHub.togglePin", "when": "false" },
+        { "command": "projectsHub.setStatus", "when": "false" },
+        { "command": "projectsHub.assignGroup", "when": "false" },
+        { "command": "projectsHub.editTags", "when": "false" },
+        { "command": "projectsHub.editNote", "when": "false" },
+        { "command": "projectsHub.recolorGroup", "when": "false" },
+        { "command": "projectsHub.renameGroup", "when": "false" },
+        { "command": "projectsHub.deleteGroup", "when": "false" },
+        { "command": "projectsHub.renameTag", "when": "false" },
+        { "command": "projectsHub.recolorTag", "when": "false" },
+        { "command": "projectsHub.deleteTag", "when": "false" }
       ]
     },
     "configuration": {
-      "title": "Project Organizer",
+      "title": "Projects Hub",
       "properties": {
-        "projectOrganizer.openInNewWindow": {
+        "projectsHub.openInNewWindow": {
           "type": "boolean",
           "default": false,
           "description": "Open projects in a new window instead of the current one."
         },
-        "projectOrganizer.inactiveAfterDays": {
+        "projectsHub.inactiveAfterDays": {
           "type": "number",
           "default": 30,
           "minimum": 1,
@@ -147,6 +152,8 @@
     }
   },
   "scripts": {
+    "vscode:prepublish": "npm run clean && npm run compile",
+    "clean": "node -e \"require('fs').rmSync('out', { recursive: true, force: true })\"",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "test": "npm run compile && mocha \"out/test/*.test.js\"",

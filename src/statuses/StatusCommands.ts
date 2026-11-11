@@ -21,7 +21,7 @@ export class StatusCommands {
   ) {}
 
   register(): vscode.Disposable[] {
-    return [registerSafeCommand('projectOrganizer.manageStatuses', () => this.manage())];
+    return [registerSafeCommand('projectsHub.manageStatuses', () => this.manage())];
   }
 
   private async manage(): Promise<void> {

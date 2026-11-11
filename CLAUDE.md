@@ -1,4 +1,4 @@
-# Project Organizer – VS Code extension
+# Projects Hub – VS Code extension
 
 Saves projects, organizes them in virtual groups and colored tags, shows a status color, opens with one click.
 Meant for publishing on the Marketplace: all code, UI text and names are in English; UI strings go through `vscode.l10n.t`.

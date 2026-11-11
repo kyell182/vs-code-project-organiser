@@ -8,7 +8,7 @@ import { BoardContext, buildBoard } from './BoardModel';
 import { boardLabels } from './boardLabels';
 import { buildBoardHtml } from './boardHtml';
 
-const VIEW_TYPE = 'projectOrganizer.board';
+const VIEW_TYPE = 'projectsHub.board';
 
 export interface BoardDependencies {
   store: StateStore;
@@ -78,7 +78,7 @@ export class ProjectBoardPanel {
     } else if (request.type === 'setStatus') {
       await this.dependencies.projects.setStatus(project.id, request.statusId);
     } else {
-      await vscode.commands.executeCommand('projectOrganizer.editNote', { project });
+      await vscode.commands.executeCommand('projectsHub.editNote', { project });
     }
   }
 }

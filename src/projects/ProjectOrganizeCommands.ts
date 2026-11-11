@@ -21,10 +21,10 @@ export class ProjectOrganizeCommands {
 
   register(): vscode.Disposable[] {
     return [
-      registerSafeCommand<ProjectTarget>('projectOrganizer.setStatus', (item) => this.setStatus(item)),
-      registerSafeCommand<ProjectTarget>('projectOrganizer.assignGroup', (item) => this.assignGroup(item)),
-      registerSafeCommand<ProjectTarget>('projectOrganizer.editTags', (item) => this.editTags(item)),
-      registerSafeCommand<ProjectTarget>('projectOrganizer.editNote', (item) => this.editNote(item)),
+      registerSafeCommand<ProjectTarget>('projectsHub.setStatus', (item) => this.setStatus(item)),
+      registerSafeCommand<ProjectTarget>('projectsHub.assignGroup', (item) => this.assignGroup(item)),
+      registerSafeCommand<ProjectTarget>('projectsHub.editTags', (item) => this.editTags(item)),
+      registerSafeCommand<ProjectTarget>('projectsHub.editNote', (item) => this.editNote(item)),
     ];
   }
 

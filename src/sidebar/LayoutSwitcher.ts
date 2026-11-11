@@ -3,7 +3,7 @@ import { registerSafeCommand } from '../shared/registerSafeCommand';
 import { Layout, LayoutId } from './layouts/Layout';
 import { ProjectTreeProvider } from './ProjectTreeProvider';
 
-const LAYOUT_KEY = 'projectOrganizer.layout';
+const LAYOUT_KEY = 'projectsHub.layout';
 
 const LAYOUT_ICONS: Record<LayoutId, string> = {
   [LayoutId.ByGroup]: 'folder',
@@ -29,7 +29,7 @@ export class LayoutSwitcher {
 
   register(tree: ProjectTreeProvider, view: vscode.TreeView<unknown>): vscode.Disposable {
     this.showLayoutIn(view, tree.currentLayout);
-    return registerSafeCommand('projectOrganizer.switchLayout', () => this.switch(tree, view));
+    return registerSafeCommand('projectsHub.switchLayout', () => this.switch(tree, view));
   }
 
   private async switch(tree: ProjectTreeProvider, view: vscode.TreeView<unknown>): Promise<void> {

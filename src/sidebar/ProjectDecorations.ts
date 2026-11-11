@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-const SCHEME = 'project-organizer-missing';
+const SCHEME = 'projects-hub-missing';
 
 /**
  * Flags projects whose folder is gone. A decoration colors the whole row (label and tags alike),

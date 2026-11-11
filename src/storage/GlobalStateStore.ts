@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { createEmptyState, OrganizerState } from './OrganizerState';
 import { StateStore } from './StateStore';
 
-const STATE_KEY = 'projectOrganizer.state';
+const STATE_KEY = 'projectsHub.state';
 
 /**
  * Stores everything in VS Code's global state, so projects are shared by all windows,

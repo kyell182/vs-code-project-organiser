@@ -13,10 +13,10 @@ export class TagCommands {
 
   register(): vscode.Disposable[] {
     return [
-      registerSafeCommand('projectOrganizer.createTag', () => this.create()),
-      registerSafeCommand<SectionTarget>('projectOrganizer.renameTag', (target) => this.rename(target)),
-      registerSafeCommand<SectionTarget>('projectOrganizer.recolorTag', (target) => this.recolor(target)),
-      registerSafeCommand<SectionTarget>('projectOrganizer.deleteTag', (target) => this.delete(target)),
+      registerSafeCommand('projectsHub.createTag', () => this.create()),
+      registerSafeCommand<SectionTarget>('projectsHub.renameTag', (target) => this.rename(target)),
+      registerSafeCommand<SectionTarget>('projectsHub.recolorTag', (target) => this.recolor(target)),
+      registerSafeCommand<SectionTarget>('projectsHub.deleteTag', (target) => this.delete(target)),
     ];
   }
 
@@ -64,7 +64,7 @@ function askTagName(value?: string): Thenable<string | undefined> {
 
 function requireId(target: SectionTarget): string {
   if (!target?.targetId) {
-    throw new DomainError(vscode.l10n.t('Run this command from a tag in the Project Organizer sidebar.'));
+    throw new DomainError(vscode.l10n.t('Run this command from a tag in the Projects Hub sidebar.'));
   }
   return target.targetId;
 }

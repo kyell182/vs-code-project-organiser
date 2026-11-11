@@ -15,13 +15,13 @@ export class ProjectCommands {
 
   register(): vscode.Disposable[] {
     return [
-      registerSafeCommand('projectOrganizer.saveCurrentProject', () => this.saveCurrent()),
-      registerSafeCommand('projectOrganizer.addProjectFolder', () => this.addFolder()),
-      registerSafeCommand<ProjectTarget>('projectOrganizer.openProject', (item) => this.opener.open(item.project)),
-      registerSafeCommand<ProjectTarget>('projectOrganizer.openProjectInNewWindow', (item) => this.opener.open(item.project, true)),
-      registerSafeCommand<ProjectTarget>('projectOrganizer.renameProject', (item) => this.rename(item)),
-      registerSafeCommand<ProjectTarget>('projectOrganizer.removeProject', (item) => this.remove(item)),
-      registerSafeCommand<ProjectTarget>('projectOrganizer.togglePin', (item) => this.projects.togglePin(item.project.id)),
+      registerSafeCommand('projectsHub.saveCurrentProject', () => this.saveCurrent()),
+      registerSafeCommand('projectsHub.addProjectFolder', () => this.addFolder()),
+      registerSafeCommand<ProjectTarget>('projectsHub.openProject', (item) => this.opener.open(item.project)),
+      registerSafeCommand<ProjectTarget>('projectsHub.openProjectInNewWindow', (item) => this.opener.open(item.project, true)),
+      registerSafeCommand<ProjectTarget>('projectsHub.renameProject', (item) => this.rename(item)),
+      registerSafeCommand<ProjectTarget>('projectsHub.removeProject', (item) => this.remove(item)),
+      registerSafeCommand<ProjectTarget>('projectsHub.togglePin', (item) => this.projects.togglePin(item.project.id)),
     ];
   }
 

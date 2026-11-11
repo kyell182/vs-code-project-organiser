@@ -3,7 +3,7 @@ import { HexColor, normalizeHex } from './Color';
 import { buildColorPickerHtml } from './colorPickerHtml';
 import { RecentColors } from './RecentColors';
 
-const VIEW_TYPE = 'projectOrganizer.colorPicker';
+const VIEW_TYPE = 'projectsHub.colorPicker';
 const DEFAULT_START_COLOR: HexColor = '#3794ff';
 
 type PickerMessage = { type: 'ready' } | { type: 'pick'; color: string } | { type: 'cancel' };

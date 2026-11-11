@@ -11,6 +11,6 @@ export async function reportErrors(action: () => Promise<void>): Promise<void> {
       return;
     }
     const detail = error instanceof Error ? error.message : String(error);
-    vscode.window.showErrorMessage(vscode.l10n.t('Project Organizer: {0}', detail));
+    vscode.window.showErrorMessage(vscode.l10n.t('Projects Hub: {0}', detail));
   }
 }

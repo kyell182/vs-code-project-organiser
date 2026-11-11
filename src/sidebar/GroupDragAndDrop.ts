@@ -6,7 +6,7 @@ import { ProjectItem } from './ProjectItem';
 import { TreeNode } from './ProjectTreeProvider';
 import { SectionItem } from './SectionItem';
 
-const MIME_TYPE = 'application/vnd.code.tree.projectorganizer.projects';
+const MIME_TYPE = 'application/vnd.code.tree.projectshub.projects';
 
 /** Dropping projects on a group assigns them; dropping on "Ungrouped" clears their group. */
 export class GroupDragAndDrop implements vscode.TreeDragAndDropController<TreeNode> {

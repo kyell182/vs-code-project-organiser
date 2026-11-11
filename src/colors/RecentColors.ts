@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { HexColor, isHexColor, normalizeHex } from './Color';
 
-const RECENT_KEY = 'projectOrganizer.recentColors';
+const RECENT_KEY = 'projectsHub.recentColors';
 const MAX_RECENT = 8;
 
 /** The last custom colors used, newest first, so a color can be reused across tags, groups and statuses. */

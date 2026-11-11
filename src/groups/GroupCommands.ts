@@ -15,10 +15,10 @@ export class GroupCommands {
 
   register(): vscode.Disposable[] {
     return [
-      registerSafeCommand('projectOrganizer.createGroup', () => this.create()),
-      registerSafeCommand<SectionTarget>('projectOrganizer.renameGroup', (target) => this.rename(target)),
-      registerSafeCommand<SectionTarget>('projectOrganizer.recolorGroup', (target) => this.recolor(target)),
-      registerSafeCommand<SectionTarget>('projectOrganizer.deleteGroup', (target) => this.delete(target)),
+      registerSafeCommand('projectsHub.createGroup', () => this.create()),
+      registerSafeCommand<SectionTarget>('projectsHub.renameGroup', (target) => this.rename(target)),
+      registerSafeCommand<SectionTarget>('projectsHub.recolorGroup', (target) => this.recolor(target)),
+      registerSafeCommand<SectionTarget>('projectsHub.deleteGroup', (target) => this.delete(target)),
     ];
   }
 
@@ -55,7 +55,7 @@ export class GroupCommands {
 
 function requireId(target: SectionTarget): string {
   if (!target?.targetId) {
-    throw new DomainError(vscode.l10n.t('Run this command from a group in the Project Organizer sidebar.'));
+    throw new DomainError(vscode.l10n.t('Run this command from a group in the Projects Hub sidebar.'));
   }
   return target.targetId;
 }

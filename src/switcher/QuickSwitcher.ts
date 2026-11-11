@@ -20,7 +20,7 @@ export class QuickSwitcher {
   ) {}
 
   register(): vscode.Disposable {
-    return registerSafeCommand('projectOrganizer.quickSwitch', () => this.show());
+    return registerSafeCommand('projectsHub.quickSwitch', () => this.show());
   }
 
   private async show(): Promise<void> {

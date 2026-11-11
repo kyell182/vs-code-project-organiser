@@ -35,7 +35,7 @@ import { TagCommands } from './tags/TagCommands';
 import { TagPicker } from './tags/TagPicker';
 import { TagService } from './tags/TagService';
 
-const VIEW_ID = 'projectOrganizer.projects';
+const VIEW_ID = 'projectsHub.projects';
 
 interface Core {
   settings: Settings;
@@ -120,7 +120,7 @@ function createBoard(context: vscode.ExtensionContext, core: Core): ProjectBoard
     opener: core.opener,
     context: () => ({ resolver: core.resolver, inspector, currentPath: core.currentPath() }),
   });
-  context.subscriptions.push(registerSafeCommand('projectOrganizer.openBoard', async () => board.show()));
+  context.subscriptions.push(registerSafeCommand('projectsHub.openBoard', async () => board.show()));
   return board;
 }
 
@@ -139,7 +139,7 @@ function registerCommands(core: Core): vscode.Disposable[] {
 
 function recordCurrentProjectOpened(projects: ProjectService, path: string | undefined): void {
   if (path) {
-    projects.markOpened(path, Date.now()).catch((error) => console.error('Project Organizer: could not record opening', error));
+    projects.markOpened(path, Date.now()).catch((error) => console.error('Projects Hub: could not record opening', error));
   }
 }
 

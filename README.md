@@ -1,4 +1,4 @@
-# Project Organizer
+# Projects Hub
 
 Save your projects, organize them in groups, label them with colored tags and see at a glance which ones are active. Open any project with one click.
 
@@ -24,5 +24,5 @@ Save your projects, organize them in groups, label them with colored tags and se
 
 | Setting | Default | Description |
 |---|---|---|
-| `projectOrganizer.openInNewWindow` | `false` | Open projects in a new window. |
-| `projectOrganizer.inactiveAfterDays` | `30` | Days without opening before a project becomes inactive. |
+| `projectsHub.openInNewWindow` | `false` | Open projects in a new window. |
+| `projectsHub.inactiveAfterDays` | `30` | Days without opening before a project becomes inactive. |

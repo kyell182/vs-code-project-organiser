@@ -8,7 +8,7 @@ import { ProjectView } from './ProjectView';
 import { statusIcon } from '../statuses/StatusAppearance';
 
 export const PROJECT_CONTEXT = 'project';
-export const OPEN_PROJECT_COMMAND = 'projectOrganizer.openProject';
+export const OPEN_PROJECT_COMMAND = 'projectsHub.openProject';
 
 export class ProjectItem extends vscode.TreeItem implements ProjectTarget {
   constructor(
