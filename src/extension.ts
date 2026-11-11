@@ -36,6 +36,7 @@ import { StatusService } from './statuses/StatusService';
 import { GlobalStateStore } from './storage/GlobalStateStore';
 import { MachinePaths } from './storage/MachinePaths';
 import { MachinePathStore } from './storage/MachinePathStore';
+import { SyncingStateStore } from './storage/sync/SyncingStateStore';
 import { CurrentProjectStatusBar } from './switcher/CurrentProjectStatusBar';
 import { QuickSwitcher } from './switcher/QuickSwitcher';
 import { TagCommands } from './tags/TagCommands';
@@ -50,6 +51,7 @@ const VIEW_ID = 'projectsHub.projects';
 interface Core {
   settings: Settings;
   store: MachinePathStore;
+  sync: SyncingStateStore;
   locator: FolderLocator;
   projects: ProjectService;
   groups: GroupService;
@@ -77,17 +79,27 @@ export function activate(context: vscode.ExtensionContext): void {
     statusBar,
     ...registerCommands(core),
     core.store.onDidChange(refreshAll),
-    // Global state is not pushed between windows, so re-read it whenever this window gets focus.
-    vscode.window.onDidChangeWindowState((state) => state.focused && refreshAll()),
+    // Global state is not pushed between windows and Settings Sync gives no event, so check on focus.
+    vscode.window.onDidChangeWindowState((state) => state.focused && reconcileAndRefresh(core.sync, refreshAll)),
     vscode.workspace.onDidChangeConfiguration((event) => core.settings.affectsStatus(event) && refreshAll()),
   );
+  reconcileAndRefresh(core.sync, refreshAll);
   recordCurrentProjectOpened(core.projects, core.currentPath());
+}
+
+/** Merges changes Settings Sync brought in with the ones made here, then redraws. */
+function reconcileAndRefresh(sync: SyncingStateStore, refreshAll: () => void): void {
+  sync
+    .reconcile()
+    .catch((error) => console.error('Projects Hub: could not merge synced projects', error))
+    .finally(refreshAll);
 }
 
 function createCore(context: vscode.ExtensionContext): Core {
   const settings = new Settings();
   const syncedStore = new GlobalStateStore(context.globalState);
-  const store = new MachinePathStore(syncedStore, new MachinePaths(context.globalState));
+  const sync = new SyncingStateStore(syncedStore, context.globalState);
+  const store = new MachinePathStore(sync, new MachinePaths(context.globalState));
   const ids = { next: () => randomUUID() };
   const projects = new ProjectService(store, ids);
   const locator = new FolderLocator(projects, store);
@@ -97,6 +109,7 @@ function createCore(context: vscode.ExtensionContext): Core {
   return {
     settings,
     store,
+    sync,
     locator,
     projects,
     groups: new GroupService(store, ids),

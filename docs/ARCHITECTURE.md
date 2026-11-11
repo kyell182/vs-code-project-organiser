@@ -20,7 +20,7 @@ The code is organized **per feature**, not per technical type.
 | Folder | Responsibility |
 |---|---|
 | `src/extension.ts` | Entry point and composition root: creates every part once and wires them together. |
-| `storage/` | The saved model (`OrganizerState`), the `StateStore` abstraction, `GlobalStateStore` (VS Code global state + Settings Sync) and `MachinePathStore` (folder locations per computer, never synced). |
+| `storage/` | The saved model (`OrganizerState`), the `StateStore` abstraction, `GlobalStateStore` (VS Code global state + Settings Sync), `MachinePathStore` (folder locations per computer, never synced) and `sync/` (merging copies from other computers). |
 | `projects/` | Saving and opening projects, locating a missing folder (`FolderLocator`), notes, assigning status, group and tags. |
 | `statuses/` | Built-in and custom statuses, `StatusResolver` (automatic or manual), status picker and management. |
 | `todos/` | To-dos per project: service, progress (pure), the to-do picker and commands. |
@@ -90,11 +90,21 @@ Everything is saved as one `OrganizerState` object under the key `projectsHub.st
 
 Folder locations that differ per computer are kept under `projectsHub.machinePaths` (project id → path), which is **not** synced. `MachinePathStore` wraps `GlobalStateStore`: reading puts this computer's path on each project, writing puts the saved path back, so the rest of the extension only ever sees the right folder.
 
+Settings Sync replaces the whole `projectsHub.state` value with the copy of another computer. `SyncingStateStore` keeps the copy this computer wrote last under `projectsHub.lastWritten` (not synced). When the two differ, `mergeStates` combines them record by record:
+
+- every write runs `stampChanges`, which sets `updatedAt` on new or changed records and leaves a tombstone (`deleted`) for removed ones;
+- per id the copy with the newest `updatedAt` wins (a tie goes to the synced copy);
+- a tombstone removes a record unless the record changed after it; tombstones are dropped after 90 days.
+
+Reading returns the merge right away; `reconcile()` (on activation and window focus) saves it, so this computer's changes go back out.
+
 ```mermaid
 flowchart LR
     services["Services<br/>(projects, tags, …)"] -->|read / write| machine["MachinePathStore"]
-    machine -->|saved paths| synced[("projectsHub.state<br/>synced")]
     machine -->|this computer's paths| local[("projectsHub.machinePaths<br/>this computer only")]
+    machine --> syncing["SyncingStateStore<br/>stampChanges · mergeStates"]
+    syncing -->|last copy written here| last[("projectsHub.lastWritten<br/>this computer only")]
+    syncing --> synced[("projectsHub.state<br/>synced")]
 ```
 
 ```mermaid

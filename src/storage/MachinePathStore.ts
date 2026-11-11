@@ -1,17 +1,8 @@
 import { MachinePaths } from './MachinePaths';
 import { OrganizerState } from './OrganizerState';
-import { StateStore } from './StateStore';
+import { ObservableStateStore } from './StateStore';
 
 type Listener = () => unknown;
-
-interface Subscription {
-  dispose(): unknown;
-}
-
-/** A store that tells when it changed; vscode.Event fits this shape. */
-export interface ObservableStateStore extends StateStore {
-  onDidChange(listener: Listener): Subscription;
-}
 
 /**
  * Shows each project at its folder on this computer, while the synced state keeps the path it was saved with.
@@ -48,7 +39,7 @@ export class MachinePathStore implements ObservableStateStore {
     this.listeners.forEach((listener) => listener());
   }
 
-  onDidChange(listener: Listener): Subscription {
+  onDidChange(listener: Listener): { dispose(): void } {
     const fromSynced = this.synced.onDidChange(listener);
     this.listeners.add(listener);
     return {

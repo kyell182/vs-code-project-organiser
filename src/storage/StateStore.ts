@@ -5,3 +5,8 @@ export interface StateStore {
   read(): OrganizerState;
   write(state: OrganizerState): Promise<void>;
 }
+
+/** A store that tells when it changed; vscode.Event fits this shape. */
+export interface ObservableStateStore extends StateStore {
+  onDidChange(listener: () => unknown): { dispose(): unknown };
+}

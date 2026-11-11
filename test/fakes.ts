@@ -1,6 +1,6 @@
 import { IdGenerator } from '../src/shared/IdGenerator';
 import { createEmptyState, OrganizerState } from '../src/storage/OrganizerState';
-import { LocalMemento } from '../src/storage/MachinePaths';
+import { LocalMemento } from '../src/storage/LocalMemento';
 import { StateStore } from '../src/storage/StateStore';
 
 export class InMemoryStateStore implements StateStore {

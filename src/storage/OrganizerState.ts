@@ -22,6 +22,8 @@ export interface ProjectRecord {
   color?: Color;
   /** Position within its status column or shelf, set by dragging; lower comes first. */
   order?: number;
+  /** Set by the store on every change, so syncing can tell which copy is newer. */
+  updatedAt?: number;
 }
 
 export interface TodoRecord {
@@ -35,12 +37,14 @@ export interface GroupRecord {
   name: string;
   /** Optional because groups saved by v0.1 have no color yet. */
   color?: Color;
+  updatedAt?: number;
 }
 
 export interface TagRecord {
   id: string;
   name: string;
   color: Color;
+  updatedAt?: number;
 }
 
 /** A status the user made in addition to the built-in ones. */
@@ -48,6 +52,13 @@ export interface CustomStatusRecord {
   id: StatusId;
   name: string;
   color: Color;
+  updatedAt?: number;
+}
+
+/** Remembers that a project, group, tag or status was removed, so a sync does not bring it back. */
+export interface Tombstone {
+  id: string;
+  deletedAt: number;
 }
 
 export interface OrganizerState {
@@ -55,6 +66,8 @@ export interface OrganizerState {
   groups: GroupRecord[];
   tags: TagRecord[];
   statuses: CustomStatusRecord[];
+  /** Optional because state saved before v0.4 has none. */
+  deleted?: Tombstone[];
 }
 
 export function createEmptyState(): OrganizerState {

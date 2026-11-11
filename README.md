@@ -162,6 +162,9 @@ No. Removing a project, group or tag only removes it from Projects Hub. Nothing 
 **Where is my data stored?**
 In VS Code's own storage. With Settings Sync turned on (including **Extensions**), it follows you to your other machines.
 
+**I changed things on two computers. Which one wins?**
+Both, as long as they touch different projects, groups, tags or statuses: Projects Hub merges them record by record, and the newest change of each one wins. Two changes to the *same* project (say a note here and a tag there) still keep only the newest. Use Projects Hub 0.4 or later on every computer, otherwise removed items can come back.
+
 **My projects are in a different folder on my other computer.**
 Right-click the project (it shows ⚠) → **Locate Folder on This Computer…**, or use the link in its tooltip. That folder is remembered for this computer only; your other computers keep their own.
 

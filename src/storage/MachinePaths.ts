@@ -1,8 +1,4 @@
-/** The part of VS Code's Memento this needs, so it stays testable without VS Code. */
-export interface LocalMemento {
-  get<T>(key: string): T | undefined;
-  update(key: string, value: unknown): Thenable<void>;
-}
+import { LocalMemento } from './LocalMemento';
 
 /** Never registered for Settings Sync: each computer keeps its own folder locations. */
 const MACHINE_PATHS_KEY = 'projectsHub.machinePaths';
