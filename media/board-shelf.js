@@ -4,6 +4,7 @@
   const hub = window.ProjectsHub;
   const { element, applyColor } = hub;
   const tooltip = /** @type {HTMLElement} */ (document.getElementById('tooltip'));
+  /** Purely decorative, so a shelf looks like a real bookcase; a height says nothing about the project. */
   const BOOK_HEIGHTS = [140, 148, 156, 164, 172];
   /** Three ribbons are all that fit on the top of a book. */
 const MAX_TAG_RIBBONS = 3;
@@ -146,7 +147,7 @@ const MAX_TAG_RIBBONS = 3;
     tooltip.hidden = true;
   }
 
-  /** Gives every book its own height, the same each time. */
+  /** Turns the project id into a fixed number, so a book keeps its height after a rename or a move. */
   function stableNumber(text) {
     let value = 0;
     for (const character of text) value = (value * 31 + character.charCodeAt(0)) >>> 0;

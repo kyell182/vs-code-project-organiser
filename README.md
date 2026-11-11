@@ -115,6 +115,7 @@ The project board opens as a bookcase (**📚 Shelf**). Switch to **🗂 Board**
 
 - Every **shelf is a status**: Active, Paused, Inactive, Archived and your own statuses.
 - Every **book is a project** in its own color. Right-click a book, or right-click the project in the sidebar → *Change Book Color…*, to pick a color. Books without a chosen color get a fixed color of their own.
+- **Book heights differ only for looks**, like a real bookcase. The height means nothing: every project gets one of five heights once and keeps it, also when you rename or move it.
 - **Ribbons** hang out of the top of a book like bookmarks, one per tag in the tag color. With more than three tags they are grouped into one striped ribbon with the number of tags; hover it to see them all. The shelf already tells the status.
 - **Hover** a book for its group, tags, note, type, branch and when you last opened it.
 - **Drag** a book to another shelf to change its status, or within a shelf to put it in your own order. The order is the same on the board.
