@@ -129,7 +129,7 @@
 
 .spine-title {
   position: absolute;
-  inset: 34px 0 22px;
+  inset: 34px 0 26px;
   display: block;
   overflow: hidden;
   text-align: center;
@@ -142,6 +142,17 @@
   font-weight: 600;
   color: #fff;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+/* Fills up as the to-dos of the project get done. */
+.book-progress {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 18px;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.35);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35);
 }
 
 .book-pin {
@@ -178,4 +189,6 @@
 .tooltip .chips { max-width: 190px; }
 .tip-label { min-width: 76px; color: var(--muted); }
 .tip-note { font-style: italic; }
+.tip-todos { display: flex; flex-direction: column; gap: 2px; }
+.tip-todo { color: var(--vscode-foreground); }
 .tip-hint { margin-top: 4px; font-size: 0.8em; color: var(--muted); }

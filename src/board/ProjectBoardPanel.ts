@@ -19,6 +19,7 @@ const BOARD_STYLES = ['board.css', 'board-shelf.css'];
 const REQUEST_COMMANDS = {
   editNote: 'projectsHub.editNote',
   setBookColor: 'projectsHub.setBookColor',
+  manageTodos: 'projectsHub.manageTodos',
 } as const;
 
 export interface BoardDependencies {
@@ -87,6 +88,8 @@ export class ProjectBoardPanel {
     }
     if (request.type === 'open') {
       await this.dependencies.opener.open(project, request.newWindow || undefined);
+    } else if (request.type === 'toggleTodo') {
+      await vscode.commands.executeCommand('projectsHub.toggleTodo', { projectId: project.id, todoId: request.todoId });
     } else if (request.type === 'move') {
       await this.dependencies.placement.move({ projectId: project.id, statusId: request.statusId, beforeId: request.beforeId }, Date.now());
     } else {

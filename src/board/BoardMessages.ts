@@ -6,7 +6,9 @@ export type BoardRequest =
   | { type: 'open'; projectId: string; newWindow: boolean }
   | { type: 'move'; projectId: string; statusId: string; beforeId?: string }
   | { type: 'editNote'; projectId: string }
-  | { type: 'setBookColor'; projectId: string };
+  | { type: 'setBookColor'; projectId: string }
+  | { type: 'manageTodos'; projectId: string }
+  | { type: 'toggleTodo'; projectId: string; todoId: string };
 
 /** The extension sends the full board each time something changes; the page simply re-renders. */
 export interface BoardRender {

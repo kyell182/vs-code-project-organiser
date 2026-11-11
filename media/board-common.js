@@ -47,6 +47,15 @@
     return event.altKey || event.ctrlKey || event.metaKey;
   }
 
+  /** A thin bar that fills up as to-dos get done. */
+  function progressBar(todos, className) {
+    const bar = element('div', className);
+    const fill = element('span', 'progress-fill');
+    fill.style.width = `${todos.total === 0 ? 0 : Math.round((todos.done / todos.total) * 100)}%`;
+    bar.append(fill);
+    return bar;
+  }
+
   function open(card, newWindow) {
     vscode.postMessage({ type: 'open', projectId: card.id, newWindow });
   }
@@ -98,5 +107,5 @@
     });
   }
 
-  window.ProjectsHub = { vscode, element, colorValue, applyColor, relativeTime, searchText, open, wantsNewWindow, makeDraggable, makeDropZone };
+  window.ProjectsHub = { vscode, element, colorValue, applyColor, progressBar, relativeTime, searchText, open, wantsNewWindow, makeDraggable, makeDropZone };
 })();

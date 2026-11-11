@@ -38,6 +38,7 @@ const MAX_TAG_RIBBONS = 3;
     book.classList.toggle('current', card.isCurrent);
     book.classList.toggle('missing', card.isMissing);
     book.append(renderTagRibbons(card), element('span', 'spine-title', card.name));
+    if (card.todos.total > 0) book.append(hub.progressBar(card.todos, 'book-progress'));
     if (card.isPinned) book.append(element('span', 'book-pin', '★'));
     addBookEvents(book, card, column, render);
     hub.makeDraggable(book, card);
@@ -103,6 +104,7 @@ const MAX_TAG_RIBBONS = 3;
     const rows = [
       tipRow(render.labels.group, card.group?.name),
       tipRow(render.labels.tags, card.tags.length > 0 ? tagChips(card.tags) : undefined),
+      tipRow(render.labels.todos, todoSummary(card.todos)),
       tipRow(render.labels.type, card.projectType),
       tipRow(render.labels.branch, card.branch),
       tipRow(render.labels.lastOpened, hub.relativeTime(card.lastOpened, render)),
@@ -111,6 +113,14 @@ const MAX_TAG_RIBBONS = 3;
     const missing = card.isMissing ? [element('div', 'warning', `⚠ ${render.labels.missing}`)] : [];
     tooltip.replaceChildren(element('strong', 'tip-title', card.name), status, ...rows, ...note, ...missing, element('div', 'tip-hint', render.labels.bookHint));
     placeTooltip(book);
+  }
+
+  /** "2/5" with the next open to-dos underneath. */
+  function todoSummary(todos) {
+    if (todos.total === 0) return undefined;
+    const block = element('div', 'tip-todos');
+    block.append(element('span', '', `${todos.done}/${todos.total}`), ...todos.next.map((todo) => element('span', 'tip-todo', `☐ ${todo.text}`)));
+    return block;
   }
 
   /** `value` is text or a ready-made element such as the tag chips. */

@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { colorDot } from '../colors/colorEmoji';
+import { noteSummary } from '../notes/noteSummary';
 import { ProjectOpener } from '../projects/ProjectOpener';
 import { statusLabel, statusPickerIcon } from '../statuses/StatusAppearance';
 import { StatusResolver } from '../statuses/StatusResolver';
@@ -58,12 +59,13 @@ export class QuickSwitcher {
     const status = this.resolver.resolve(project, state, now);
     const tags = state.tags.filter((tag) => project.tagIds.includes(tag.id)).map((tag) => `${colorDot(tag.color)} #${tag.name}`);
     const group = state.groups.find((candidate) => candidate.id === project.groupId)?.name;
+    const summary = noteSummary(project.note);
     return {
       label: project.name,
       project,
       iconPath: statusPickerIcon(status),
       description: [group, statusLabel(status), ...tags].filter(Boolean).join('  ·  '),
-      detail: project.note ? `✎ ${project.note}  —  ${project.path}` : project.path,
+      detail: summary ? `✎ ${summary}  —  ${project.path}` : project.path,
       buttons: [NEW_WINDOW_BUTTON],
     };
   }

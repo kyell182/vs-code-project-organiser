@@ -23,5 +23,7 @@ export function boardLabels(): Record<string, string> {
     branch: vscode.l10n.t('Branch'),
     lastOpened: vscode.l10n.t('Last opened'),
     allTags: vscode.l10n.t('{0} tags'),
+    todos: vscode.l10n.t('To-dos'),
+    noTodos: vscode.l10n.t('Add to-dos'),
   };
 }

@@ -59,10 +59,13 @@ export class ProjectService {
     });
   }
 
-  /** A short reminder such as "next: login page"; an empty note removes it. */
-  setNote(id: string, note: string): Promise<void> {
+  /** A markdown note; an empty note removes it. */
+  setNote(id: string, note: string, now: number = Date.now()): Promise<void> {
     const trimmed = note.trim();
-    return this.update(id, (project) => (project.note = trimmed.length > 0 ? trimmed : undefined));
+    return this.update(id, (project) => {
+      project.note = trimmed.length > 0 ? trimmed : undefined;
+      project.noteUpdatedAt = now;
+    });
   }
 
   setColor(id: string, color: Color): Promise<void> {

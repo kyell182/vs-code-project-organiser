@@ -28,6 +28,18 @@ describe('BoardModel', () => {
     assert.strictEqual(card.isCurrent, true);
   });
 
+  it('shows the first line of the note and the to-do progress on a card', () => {
+    const state = sampleState();
+    state.projects[0].note = '# Next\n- more details';
+    state.projects[0].todos = [
+      { id: 't1', text: 'wire', isDone: true },
+      { id: 't2', text: 'test', isDone: false },
+    ];
+    const card = buildBoard(state, NOW, context)[0].cards[0];
+    assert.strictEqual(card.note, 'Next');
+    assert.deepStrictEqual(card.todos, { done: 1, total: 2, next: [{ id: 't2', text: 'test' }] });
+  });
+
   it('puts pinned projects first within a column', () => {
     const state = sampleState();
     state.projects.forEach((project) => (project.lastOpened = undefined));

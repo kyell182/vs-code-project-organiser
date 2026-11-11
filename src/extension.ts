@@ -8,6 +8,8 @@ import { CustomColorPanel } from './colors/CustomColorPanel';
 import { RecentColors } from './colors/RecentColors';
 import { ProjectBoardPanel } from './board/ProjectBoardPanel';
 import { GroupCommands } from './groups/GroupCommands';
+import { NoteCommands } from './notes/NoteCommands';
+import { NOTE_SCHEME, NoteFileSystem } from './notes/NoteFileSystem';
 import { GroupPicker } from './groups/GroupPicker';
 import { GroupService } from './groups/GroupService';
 import { ProjectCommands } from './projects/ProjectCommands';
@@ -35,6 +37,9 @@ import { QuickSwitcher } from './switcher/QuickSwitcher';
 import { TagCommands } from './tags/TagCommands';
 import { TagPicker } from './tags/TagPicker';
 import { TagService } from './tags/TagService';
+import { TodoCommands } from './todos/TodoCommands';
+import { TodoPicker } from './todos/TodoPicker';
+import { TodoService } from './todos/TodoService';
 
 const VIEW_ID = 'projectsHub.projects';
 
@@ -45,6 +50,7 @@ interface Core {
   groups: GroupService;
   tags: TagService;
   statuses: StatusService;
+  todos: TodoService;
   resolver: StatusResolver;
   opener: ProjectOpener;
   colors: ColorPicker;
@@ -88,6 +94,7 @@ function createCore(context: vscode.ExtensionContext): Core {
     groups: new GroupService(store, ids),
     tags: new TagService(store, ids),
     statuses: new StatusService(store, ids),
+    todos: new TodoService(store, ids),
     resolver: new StatusResolver(() => settings.inactiveAfterDays()),
     opener: new ProjectOpener(projects, settings),
     colors: new ColorPicker(new CustomColorPanel(context.extensionUri, recentColors), recentColors),
@@ -136,6 +143,9 @@ function registerCommands(core: Core): vscode.Disposable[] {
     ...new GroupCommands(core.groups, groupPicker, core.colors).register(),
     ...new TagCommands(core.tags, core.colors).register(),
     ...new StatusCommands(core.statuses, core.colors).register(),
+    ...new TodoCommands(core.todos, new TodoPicker(core.todos)).register(),
+    ...new NoteCommands().register(),
+    vscode.workspace.registerFileSystemProvider(NOTE_SCHEME, new NoteFileSystem(core.projects), { isCaseSensitive: true }),
   ];
 }
 

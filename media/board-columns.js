@@ -27,7 +27,7 @@
     node.title = card.path;
     node.classList.toggle('current', card.isCurrent);
     node.classList.toggle('missing', card.isMissing);
-    node.append(renderTitle(card, render), ...renderOptional(card), renderMeta(card, render));
+    node.append(renderTitle(card, render), ...renderOptional(card), ...renderTodos(card), renderMeta(card, render));
     node.addEventListener('click', (event) => hub.open(card, hub.wantsNewWindow(event)));
     node.addEventListener('keydown', (event) => event.key === 'Enter' && hub.open(card, hub.wantsNewWindow(event)));
     hub.makeDraggable(node, card);
@@ -47,6 +47,7 @@
   function renderActions(card, render) {
     const actions = element('div', 'actions');
     actions.append(
+      actionButton('☑', render.labels.todos, () => hub.vscode.postMessage({ type: 'manageTodos', projectId: card.id })),
       actionButton('✎', render.labels.editNote, () => hub.vscode.postMessage({ type: 'editNote', projectId: card.id })),
       actionButton('🎨', render.labels.bookColor, () => hub.vscode.postMessage({ type: 'setBookColor', projectId: card.id })),
       actionButton('⧉', render.labels.newWindow, () => hub.open(card, true)),
@@ -77,6 +78,27 @@
     }
     if (card.note) parts.push(element('div', 'note', `✎ ${card.note}`));
     return parts;
+  }
+
+  /** Progress and the next open to-dos; ticking one off works right on the card. */
+  function renderTodos(card) {
+    if (card.todos.total === 0) return [];
+    const block = element('div', 'todos');
+    const header = element('div', 'todos-header');
+    header.append(hub.progressBar(card.todos, 'progress'), element('span', 'todos-count', `${card.todos.done}/${card.todos.total}`));
+    block.append(header, ...card.todos.next.map((todo) => renderTodo(card, todo)));
+    return [block];
+  }
+
+  function renderTodo(card, todo) {
+    const row = element('button', 'todo');
+    row.append(element('span', 'todo-box', '☐'), element('span', 'todo-text', todo.text));
+    row.addEventListener('click', (event) => {
+      event.stopPropagation();
+      row.classList.add('is-done');
+      hub.vscode.postMessage({ type: 'toggleTodo', projectId: card.id, todoId: todo.id });
+    });
+    return row;
   }
 
   function renderMeta(card, render) {

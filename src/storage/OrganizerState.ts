@@ -12,11 +12,22 @@ export interface ProjectRecord {
   manualStatus?: StatusId;
   lastOpened?: number;
   isPinned: boolean;
+  /** Markdown; its first line is shown as a summary. */
   note?: string;
+  /** When the note last changed, so the note editor can tell whether it is up to date. */
+  noteUpdatedAt?: number;
+  /** Optional because projects saved before v0.3 have none. */
+  todos?: TodoRecord[];
   /** Book color on the shelf; without one a stable color is derived from the id. */
   color?: Color;
   /** Position within its status column or shelf, set by dragging; lower comes first. */
   order?: number;
+}
+
+export interface TodoRecord {
+  id: string;
+  text: string;
+  isDone: boolean;
 }
 
 export interface GroupRecord {

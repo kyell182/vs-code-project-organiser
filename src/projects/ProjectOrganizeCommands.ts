@@ -14,7 +14,7 @@ export interface OrganizePickers {
   color: ColorPicker;
 }
 
-/** Giving a project its status, group, tags, note and book color. */
+/** Giving a project its status, group, tags and book color. Notes and to-dos have their own features. */
 export class ProjectOrganizeCommands {
   constructor(
     private readonly projects: ProjectService,
@@ -26,7 +26,6 @@ export class ProjectOrganizeCommands {
       registerSafeCommand<ProjectTarget>('projectsHub.setStatus', (item) => this.setStatus(item)),
       registerSafeCommand<ProjectTarget>('projectsHub.assignGroup', (item) => this.assignGroup(item)),
       registerSafeCommand<ProjectTarget>('projectsHub.editTags', (item) => this.editTags(item)),
-      registerSafeCommand<ProjectTarget>('projectsHub.editNote', (item) => this.editNote(item)),
       registerSafeCommand<ProjectTarget>('projectsHub.setBookColor', (item) => this.setBookColor(item)),
     ];
   }
@@ -56,16 +55,6 @@ export class ProjectOrganizeCommands {
     const color = await this.pickers.color.pick(item.project.name);
     if (color) {
       await this.projects.setColor(item.project.id, color);
-    }
-  }
-
-  private async editNote(item: ProjectTarget): Promise<void> {
-    const note = await vscode.window.showInputBox({
-      prompt: vscode.l10n.t('Note or next step for "{0}" (leave empty to remove)', item.project.name),
-      value: item.project.note ?? '',
-    });
-    if (note !== undefined) {
-      await this.projects.setNote(item.project.id, note);
     }
   }
 }

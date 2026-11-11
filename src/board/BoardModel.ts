@@ -1,10 +1,12 @@
 import { DEFAULT_GROUP_COLOR } from '../groups/GroupService';
 import { isSamePath } from '../shared/isSamePath';
 import { Color } from '../colors/Color';
+import { noteSummary } from '../notes/noteSummary';
 import { bookColorOf } from '../projects/bookColor';
 import { compareForShelf } from '../projects/shelfOrder';
 import { listStatuses } from '../statuses/StatusCatalog';
 import { StatusResolver } from '../statuses/StatusResolver';
+import { todoProgress } from '../todos/todoProgress';
 import { OrganizerState, ProjectRecord } from '../storage/OrganizerState';
 import { FolderFacts, FolderInspector } from './FolderFacts';
 
@@ -13,11 +15,22 @@ export interface BoardChip {
   color: Color;
 }
 
+/** Open to-dos shown on a card or in a tooltip; the rest is in the to-do list itself. */
+const NEXT_TODOS_SHOWN = 3;
+
+export interface BoardTodos {
+  done: number;
+  total: number;
+  next: { id: string; text: string }[];
+}
+
 export interface BoardCard extends FolderFacts {
   id: string;
   name: string;
   path: string;
+  /** First line of the note only; the full note opens in an editor. */
   note?: string;
+  todos: BoardTodos;
   group?: BoardChip;
   tags: BoardChip[];
   lastOpened?: number;
@@ -62,7 +75,8 @@ function toCard(project: ProjectRecord, state: OrganizerState, context: BoardCon
     id: project.id,
     name: project.name,
     path: project.path,
-    note: project.note,
+    note: noteSummary(project.note),
+    todos: toBoardTodos(project),
     group: group ? { name: group.name, color: group.color ?? DEFAULT_GROUP_COLOR } : undefined,
     tags: state.tags.filter((tag) => project.tagIds.includes(tag.id)).map((tag) => ({ name: tag.name, color: tag.color })),
     lastOpened: project.lastOpened,
@@ -72,3 +86,7 @@ function toCard(project: ProjectRecord, state: OrganizerState, context: BoardCon
   };
 }
 
+function toBoardTodos(project: ProjectRecord): BoardTodos {
+  const progress = todoProgress(project, NEXT_TODOS_SHOWN);
+  return { done: progress.done, total: progress.total, next: progress.next.map((todo) => ({ id: todo.id, text: todo.text })) };
+}

@@ -23,5 +23,10 @@ export async function run(): Promise<void> {
     .flatMap((group) => group.tabs)
     .find((tab) => tab.input instanceof vscode.TabInputWebview && tab.input.viewType.endsWith('projectsHub.board'));
   assert.ok(boardTab, 'project board opened as a webview tab');
-  console.log(`Smoke test passed: ${declared.length} commands registered, sidebar and board opened.`);
+  // The note file system answers for its scheme: an unknown project gives "file not found", not "no provider".
+  await assert.rejects(
+    Promise.resolve(vscode.workspace.fs.stat(vscode.Uri.parse('projectshub-note:/unknown-project/note.md'))),
+    (error: unknown) => error instanceof vscode.FileSystemError && error.code === 'FileNotFound',
+  );
+  console.log(`Smoke test passed: ${declared.length} commands registered, sidebar, board and note file system work.`);
 }

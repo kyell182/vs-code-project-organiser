@@ -1,14 +1,20 @@
 import * as vscode from 'vscode';
 import { Color, readableTextOn, toHex } from '../colors/Color';
 import { DEFAULT_GROUP_COLOR } from '../groups/GroupService';
+import { noteSummary } from '../notes/noteSummary';
 import { formatRelativeTime } from '../shared/relativeTime';
 import { statusLabel } from '../statuses/StatusAppearance';
+import { todoProgress } from '../todos/todoProgress';
 import { ProjectView } from './ProjectView';
+
+/** How many open to-dos the tooltip lists; the full list is one click away. */
+const NEXT_TODOS_SHOWN = 3;
 
 /** Commands the action links at the bottom may run; nothing else is trusted. */
 const ACTIONS: readonly { command: string; icon: string; label: string }[] = [
   { command: 'projectsHub.openProject', icon: 'folder-opened', label: vscode.l10n.t('Open') },
   { command: 'projectsHub.openProjectInNewWindow', icon: 'empty-window', label: vscode.l10n.t('New window') },
+  { command: 'projectsHub.manageTodos', icon: 'checklist', label: vscode.l10n.t('To-dos') },
   { command: 'projectsHub.editTags', icon: 'tag', label: vscode.l10n.t('Tags') },
   { command: 'projectsHub.setStatus', icon: 'circle-filled', label: vscode.l10n.t('Status') },
   { command: 'projectsHub.editNote', icon: 'note', label: vscode.l10n.t('Note') },
@@ -21,7 +27,8 @@ export function buildProjectTooltip(view: ProjectView, now: number = Date.now())
     `$(folder) \`${inCode(view.project.path)}\``,
     chipsLine(view),
     lastOpenedLine(view.project.lastOpened, now),
-    view.project.note ? `$(note) _${escape(view.project.note)}_` : '',
+    noteLine(view.project.note),
+    todoLines(view),
     view.isMissing ? `$(warning) **${escape(vscode.l10n.t('This folder no longer exists.'))}**` : '',
   ].filter((line) => line.length > 0);
   const markdown = new vscode.MarkdownString(`${lines.join('  \n')}\n\n---\n\n${actionLinks(view)}`, true);
@@ -49,6 +56,22 @@ function lastOpenedLine(timestamp: number | undefined, now: number): string {
   const relative = formatRelativeTime(timestamp, now, vscode.env.language);
   const exact = new Date(timestamp).toLocaleString(vscode.env.language);
   return `$(history) ${escape(vscode.l10n.t('Opened {0}', relative))} · <span style="color:#8c8c8c;">${escapeHtml(exact)}</span>`;
+}
+
+function noteLine(note: string | undefined): string {
+  const summary = noteSummary(note);
+  return summary ? `$(note) _${escape(summary)}_` : '';
+}
+
+/** Progress plus the next open to-dos, each on its own line. */
+function todoLines(view: ProjectView): string {
+  const progress = todoProgress(view.project, NEXT_TODOS_SHOWN);
+  if (progress.total === 0) {
+    return '';
+  }
+  const header = `$(checklist) ${escape(vscode.l10n.t('{0}/{1} to-dos done', progress.done, progress.total))}`;
+  const next = progress.next.map((todo) => `&nbsp;&nbsp;$(circle-large-outline) ${escape(todo.text)}`);
+  return [header, ...next].join('  \n');
 }
 
 /** Commands get the project the same way as from the sidebar: as `{ project }`. */

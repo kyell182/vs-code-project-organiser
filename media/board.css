@@ -224,3 +224,36 @@ body {
 }
 
 .hidden { display: none !important; }
+
+/* To-dos on a card: progress, then the next open steps that can be ticked off in place. */
+.todos { display: flex; flex-direction: column; gap: 3px; }
+.todos-header { display: flex; align-items: center; gap: 8px; }
+.todos-count { font-size: 0.85em; color: var(--muted); }
+
+.progress, .book-progress {
+  position: relative;
+  overflow: hidden;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--vscode-foreground) 15%, transparent);
+}
+
+.progress { flex: 1; height: 5px; }
+.progress-fill { position: absolute; inset: 0 auto 0 0; background: var(--vscode-charts-green); border-radius: inherit; }
+
+.todo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 1px 2px;
+  border: none;
+  border-radius: 4px;
+  color: var(--vscode-foreground);
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.todo:hover { background: var(--vscode-toolbar-hoverBackground); }
+.todo-box { color: var(--muted); }
+.todo.is-done .todo-text { text-decoration: line-through; opacity: 0.6; }
