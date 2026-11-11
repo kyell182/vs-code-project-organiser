@@ -82,7 +82,7 @@ function toCard(project: ProjectRecord, state: OrganizerState, context: BoardCon
     lastOpened: project.lastOpened,
     isPinned: project.isPinned,
     isCurrent: context.currentPath !== undefined && isSamePath(context.currentPath, project.path),
-    bookColor: bookColorOf(project),
+    bookColor: bookColorOf(project, group),
   };
 }
 

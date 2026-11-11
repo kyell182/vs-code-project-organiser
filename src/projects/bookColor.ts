@@ -1,26 +1,15 @@
 import { Color } from '../colors/Color';
 import { PaletteColor } from '../colors/PaletteColor';
-import { ProjectRecord } from '../storage/OrganizerState';
+import { DEFAULT_GROUP_COLOR } from '../groups/GroupService';
+import { GroupRecord, ProjectRecord } from '../storage/OrganizerState';
 
-/** Gray is left out so a default bookcase looks colorful instead of dull. */
-const DEFAULT_BOOK_COLORS: readonly PaletteColor[] = [
-  PaletteColor.Blue,
-  PaletteColor.Purple,
-  PaletteColor.Green,
-  PaletteColor.Orange,
-  PaletteColor.Red,
-  PaletteColor.Yellow,
-];
+/** Gray tells at a glance that a project is not in a group yet. */
+const UNGROUPED_BOOK_COLOR = PaletteColor.Gray;
 
-/** The chosen book color, or a color derived from the id so it never changes between sessions. */
-export function bookColorOf(project: ProjectRecord): Color {
-  return project.color ?? DEFAULT_BOOK_COLORS[hash(project.id) % DEFAULT_BOOK_COLORS.length];
-}
-
-function hash(text: string): number {
-  let value = 0;
-  for (const character of text) {
-    value = (value * 31 + character.charCodeAt(0)) >>> 0;
+/** A chosen book color stands out on purpose; otherwise the book shows the color of its group. */
+export function bookColorOf(project: ProjectRecord, group: GroupRecord | undefined): Color {
+  if (project.color) {
+    return project.color;
   }
-  return value;
+  return group ? (group.color ?? DEFAULT_GROUP_COLOR) : UNGROUPED_BOOK_COLOR;
 }

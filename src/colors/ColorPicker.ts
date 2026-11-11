@@ -7,7 +7,16 @@ import { RecentColors } from './RecentColors';
 
 interface ColorItem extends vscode.QuickPickItem {
   color?: Color;
+  isReset?: boolean;
 }
+
+/** An extra first choice that removes the color instead of picking one, such as "Use group color". */
+export interface ResetChoice {
+  label: string;
+  description?: string;
+}
+
+export const RESET_COLOR = Symbol('reset color');
 
 /** Quick pick with the theme-aware palette first, then recent custom colors and "Custom color...". */
 export class ColorPicker {
@@ -18,12 +27,22 @@ export class ColorPicker {
 
   /** `subject` is the name of the tag, group or status being colored. */
   async pick(subject: string): Promise<Color | undefined> {
-    const picked = await vscode.window.showQuickPick(this.items(), {
-      placeHolder: vscode.l10n.t('Color for "{0}"', subject),
-    });
-    if (!picked) {
-      return undefined;
-    }
+    const picked = await this.show(subject, this.items());
+    return picked && this.colorOf(picked, subject);
+  }
+
+  /** Like pick, with `reset` as the first choice; choosing it resolves to RESET_COLOR. */
+  async pickOrReset(subject: string, reset: ResetChoice): Promise<Color | typeof RESET_COLOR | undefined> {
+    const resetItem: ColorItem = { ...reset, isReset: true, iconPath: new vscode.ThemeIcon('discard') };
+    const picked = await this.show(subject, [resetItem, ...this.items()]);
+    return picked?.isReset ? RESET_COLOR : picked && this.colorOf(picked, subject);
+  }
+
+  private show(subject: string, items: ColorItem[]): Thenable<ColorItem | undefined> {
+    return vscode.window.showQuickPick(items, { placeHolder: vscode.l10n.t('Color for "{0}"', subject) });
+  }
+
+  private colorOf(picked: ColorItem, subject: string): Promise<Color | undefined> | Color {
     return picked.color ?? this.customPanel.pick({ subject });
   }
 

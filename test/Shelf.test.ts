@@ -1,5 +1,6 @@
 import * as assert from 'assert';
 import { PaletteColor } from '../src/colors/PaletteColor';
+import { DEFAULT_GROUP_COLOR } from '../src/groups/GroupService';
 import { bookColorOf } from '../src/projects/bookColor';
 import { ProjectPlacement } from '../src/projects/ProjectPlacement';
 import { ProjectService } from '../src/projects/ProjectService';
@@ -30,11 +31,16 @@ describe('shelfOrder', () => {
 });
 
 describe('bookColorOf', () => {
-  it('uses the chosen color, otherwise a stable derived one', () => {
-    assert.strictEqual(bookColorOf(project({ color: '#123456' })), '#123456');
-    const derived = bookColorOf(project({ id: 'abc' }));
-    assert.strictEqual(bookColorOf(project({ id: 'abc' })), derived);
-    assert.notStrictEqual(derived, PaletteColor.Gray);
+  const school = { id: 'g1', name: 'School', color: PaletteColor.Purple };
+
+  it('uses the chosen color first, so one book can stand out in its group', () => {
+    assert.strictEqual(bookColorOf(project({ color: '#123456', groupId: 'g1' }), school), '#123456');
+  });
+
+  it('otherwise shows the group color, and gray without a group', () => {
+    assert.strictEqual(bookColorOf(project({ groupId: 'g1' }), school), PaletteColor.Purple);
+    assert.strictEqual(bookColorOf(project({ groupId: 'g2' }), { id: 'g2', name: 'No color' }), DEFAULT_GROUP_COLOR);
+    assert.strictEqual(bookColorOf(project({}), undefined), PaletteColor.Gray);
   });
 });
 

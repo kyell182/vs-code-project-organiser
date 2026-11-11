@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { ColorPicker } from '../colors/ColorPicker';
+import { ColorPicker, RESET_COLOR, ResetChoice } from '../colors/ColorPicker';
 import { GroupPicker } from '../groups/GroupPicker';
 import { registerSafeCommand } from '../shared/registerSafeCommand';
 import { ProjectTarget } from '../shared/TreeTargets';
@@ -52,9 +52,21 @@ export class ProjectOrganizeCommands {
   }
 
   private async setBookColor(item: ProjectTarget): Promise<void> {
-    const color = await this.pickers.color.pick(item.project.name);
-    if (color) {
+    const reset = this.groupColorChoice(item);
+    const color = reset ? await this.pickers.color.pickOrReset(item.project.name, reset) : await this.pickers.color.pick(item.project.name);
+    if (color === RESET_COLOR) {
+      await this.projects.clearColor(item.project.id);
+    } else if (color) {
       await this.projects.setColor(item.project.id, color);
     }
+  }
+
+  /** Only offered when the book has its own color, since otherwise it already follows its group. */
+  private groupColorChoice(item: ProjectTarget): ResetChoice | undefined {
+    if (!item.project.color) {
+      return undefined;
+    }
+    const description = item.project.groupId ? undefined : vscode.l10n.t('gray, not in a group');
+    return { label: vscode.l10n.t('Use group color'), description };
   }
 }

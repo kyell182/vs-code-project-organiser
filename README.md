@@ -114,7 +114,7 @@ Right-click a project → **Open Note**, or use ✎ on a board card. The note op
 The project board opens as a bookcase (**📚 Shelf**). Switch to **🗂 Board** for kanban columns; the board remembers your choice while it is open.
 
 - Every **shelf is a status**: Active, Paused, Inactive, Archived and your own statuses.
-- Every **book is a project** in its own color. Right-click a book, or right-click the project in the sidebar → *Change Book Color…*, to pick a color. Books without a chosen color get a fixed color of their own.
+- Every **book is a project in the color of its group**, so you see at a glance which projects belong together. Books without a group are **gray**. Right-click a book, or right-click the project in the sidebar → *Change Book Color…*, to give one book its own color; *Use group color* in the same list undoes that.
 - **Book heights differ only for looks**, like a real bookcase. The height means nothing: every project gets one of five heights once and keeps it, also when you rename or move it.
 - **Ribbons** hang out of the top of a book like bookmarks, one per tag in the tag color. With more than three tags they are grouped into one striped ribbon with the number of tags; hover it to see them all. The shelf already tells the status.
 - **Hover** a book for its group, tags, note, type, branch and when you last opened it.

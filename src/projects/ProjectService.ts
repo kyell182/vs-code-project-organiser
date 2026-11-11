@@ -73,6 +73,11 @@ export class ProjectService {
     return this.update(id, (project) => (project.color = valid));
   }
 
+  /** Without its own color a book shows the color of its group again. */
+  clearColor(id: string): Promise<void> {
+    return this.update(id, (project) => delete project.color);
+  }
+
   assignGroup(id: string, groupId: string | undefined): Promise<void> {
     return this.mutate((state) => {
       if (groupId !== undefined) {

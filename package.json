@@ -2,7 +2,7 @@
   "name": "projects-hub",
   "displayName": "Projects Hub",
   "description": "Save projects, organize them in groups, label them with colored tags and see their status at a glance. Open any project with one click.",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "publisher": "kyell182",
   "license": "MIT",
   "icon": "media/icon.png",

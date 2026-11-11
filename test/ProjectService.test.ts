@@ -43,6 +43,13 @@ describe('ProjectService', () => {
     assert.strictEqual(projects.list()[0].groupId, undefined);
   });
 
+  it('sets a book color and clears it again', async () => {
+    const project = await projects.add('Motio', 'D:\vives\Motio');
+    await projects.setColor(project.id, PaletteColor.Red);
+    await projects.clearColor(project.id);
+    assert.strictEqual(projects.list()[0].color, undefined);
+  });
+
   it('refuses an unknown group', async () => {
     const project = await projects.add('A', 'D:\\a');
     await assert.rejects(projects.assignGroup(project.id, 'nope'), DomainError);
