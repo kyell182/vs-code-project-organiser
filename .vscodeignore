@@ -12,3 +12,4 @@ media/color-icons/**
 media/icon.svg
 .gitignore
 .gitattributes
+docs/**

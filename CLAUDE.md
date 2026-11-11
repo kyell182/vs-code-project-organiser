@@ -6,12 +6,12 @@ Meant for publishing on the Marketplace: all code, UI text and names are in Engl
 ## Architectuur
 - `src/extension.ts` – startpunt en composition root: maakt alle onderdelen aan en koppelt ze.
 - `storage/` – `OrganizerState` (opgeslagen model), `StateStore`-abstractie, `GlobalStateStore` (VS Code global state + Settings Sync).
-- `projects/` – projecten opslaan/openen, notities, status/groep/tags toewijzen. Gebruikt `statuses/`, `groups/` en `tags/`.
+- `projects/` – projecten opslaan/openen, notities, boekkleur, status/groep/tags toewijzen, volgorde bij slepen (`ProjectPlacement`, `shelfOrder`). Gebruikt `statuses/`, `groups/` en `tags/`.
 - `statuses/` – ingebouwde en eigen statussen (`StatusCatalog`), `StatusResolver` (automatisch of handmatig), statuskiezer en -beheer.
 - `groups/` – virtuele groepen met kleur (nooit mappen op schijf). Hangt af van `storage/`.
 - `tags/` – tags met kleur en de tagkiezer. Hangt af van `storage/`.
 - `sidebar/` – TreeView: `layouts/` (strategieën per groep/tag/status, pure logica), items, tooltips, kleur-decoraties, drag & drop.
-- `board/` – projectbord (webview): `BoardModel` (pure logica), map-inspectie (projecttype, git-branch), paneel. Pagina in `media/board.js` + `board.css`.
+- `board/` – projectbord (webview) met twee weergaves, Board (kolommen) en Shelf (boekenkast): `BoardModel` (pure logica), map-inspectie (projecttype, git-branch), paneel. Pagina in `media/board-*.js` + `board*.css`.
 - `switcher/` – snel wisselen (`Ctrl+Alt+P`) en statusbalk.
 - `colors/` – kleurmodel (`Color` = themakleur uit het palet óf hexcode, met tests), weergave (themakleur of gegenereerd SVG-icoon),
   `ColorPicker` (keuzelijst) en `CustomColorPanel` (webview-kleurkiezer, pagina in `media/color-picker.*`), recente kleuren.
@@ -19,7 +19,7 @@ Meant for publishing on the Marketplace: all code, UI text and names are in Engl
 - `shared/` – foutafhandeling, naamvalidatie, padvergelijking, instellingen, contracten voor boom-doelen.
 
 Domeinlogica (services, `StatusCatalog`, `StatusResolver`, layouts, `BoardModel`) importeert geen `vscode` en wordt met mocha getest.
-Repo: https://github.com/kyell182/vs-code-project-organiser
+Repo: https://github.com/kyell182/vs-code-project-organiser · Diagrammen en releasestappen: `docs/ARCHITECTURE.md` (houd bij wijzigingen mee bij).
 
 ## Starten, bouwen, testen
 - `npm install`

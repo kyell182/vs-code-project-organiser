@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.0 (not released yet)
+
+- Bookcase view on the project board (the default view): a shelf per status, a book per project in its own color with a bookmark ribbon per tag (more than three tags grouped into one ribbon) and a tooltip.
+- Drag projects within a column or shelf to put them in your own order.
+- Change Book Color… command.
+- Opening a project always reuses the current window; Alt+click (board, bookcase) or the new-window button opens a new one.
+- Richer sidebar tooltip with colored tags, relative "last opened" time and quick actions.
+- Manage Tags… command.
+- New README and docs/ARCHITECTURE.md with diagrams.
+
 ## 0.2.0
 
 - Project board: kanban columns per status with drag and drop, search, colored chips, notes, project type and git branch.
