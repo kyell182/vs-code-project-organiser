@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.3.0 (not released yet)
+## 0.3.0
 
 - To-dos per project: tick off, add, edit and delete in one list; progress and next steps on cards, books and tooltips.
 - Notes are full markdown documents that open in an editor tab and are saved with Ctrl+S.
