@@ -8,6 +8,8 @@ Meant for publishing on the Marketplace: all code, UI text and names are in Engl
 - `storage/` – `OrganizerState` (opgeslagen model), `StateStore`-abstractie, `GlobalStateStore` (VS Code global state + Settings Sync).
 - `projects/` – projecten opslaan/openen, notities, boekkleur, status/groep/tags toewijzen, volgorde bij slepen (`ProjectPlacement`, `shelfOrder`). Gebruikt `statuses/`, `groups/` en `tags/`.
 - `statuses/` – ingebouwde en eigen statussen (`StatusCatalog`), `StatusResolver` (automatisch of handmatig), statuskiezer en -beheer.
+- `todos/` – to-do's per project: `TodoService`, `todoProgress` (pure), `TodoPicker`, commando's.
+- `notes/` – Markdown-notitie in een editor-tab via `NoteFileSystem` (schema `projectshub-note:`), `noteSummary` (pure).
 - `groups/` – virtuele groepen met kleur (nooit mappen op schijf). Hangt af van `storage/`.
 - `tags/` – tags met kleur en de tagkiezer. Hangt af van `storage/`.
 - `sidebar/` – TreeView: `layouts/` (strategieën per groep/tag/status, pure logica), items, tooltips, kleur-decoraties, drag & drop.

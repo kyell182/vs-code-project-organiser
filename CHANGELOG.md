@@ -2,6 +2,8 @@
 
 ## 0.3.0 (not released yet)
 
+- To-dos per project: tick off, add, edit and delete in one list; progress and next steps on cards, books and tooltips.
+- Notes are full markdown documents that open in an editor tab and are saved with Ctrl+S.
 - Bookcase view on the project board (the default view): a shelf per status, a book per project in its own color with a bookmark ribbon per tag (more than three tags grouped into one ribbon) and a tooltip.
 - Drag projects within a column or shelf to put them in your own order.
 - Change Book Color… command.

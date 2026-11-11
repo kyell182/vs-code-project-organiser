@@ -30,7 +30,8 @@
 | 🟢 | **Status at a glance** | Active, Paused, Inactive, Archived, or your own statuses with their own color. |
 | 🗂️ | **Project board** | A kanban board with a column per status. Drag a card to change its status. |
 | 📚 | **Bookcase** | Every project is a book in its own color, on the shelf of its status. Drag books between shelves. |
-| 📝 | **Notes** | A short note or next step per project, such as "next: login page". |
+| ☑️ | **To-dos** | Next steps per project that you tick off, with progress on the card, the book and in the tooltip. |
+| 📝 | **Notes** | A full markdown note per project that opens in a normal editor tab. |
 | 🎨 | **Any color** | Standard colors that follow your theme, or any color with the built-in color picker. |
 | 📌 | **Pinned projects** | Your favorites always on top. |
 | 🔄 | **Settings Sync** | Your projects follow you to every machine. |
@@ -95,6 +96,19 @@ Open it with 🗂️ or **Projects Hub: Open Project Board**.
 - **Search** by name, group, `#tag` or note.
 - **Click** a card or book to open the project in this window, **Alt+click** to open it in a new window.
 
+### To-dos
+
+Right-click a project → **To-dos…**, or use ☑ on a board card or *To-dos* in the tooltip.
+
+- **Tick off** what is done and press `Enter`.
+- **Type** a new to-do and press `Enter` to add it; the list stays open for the next one.
+- **Edit** or **delete** a to-do with the buttons on its row; the button at the top removes all finished ones.
+- Progress shows as a bar on board cards and books (2/5), and the next open to-dos appear on the card and in the tooltips. Tick one off right on the card.
+
+### Notes
+
+Right-click a project → **Open Note**, or use ✎ on a board card. The note opens as a markdown file in a normal editor tab: headings, lists, links, preview and `Ctrl+S` all work. It is stored in Projects Hub (not in your project folder) and follows Settings Sync. Its first line is shown as a summary in the tooltip, on the card and in the quick switcher.
+
 ### The bookcase
 
 The project board opens as a bookcase (**📚 Shelf**). Switch to **🗂 Board** for kanban columns; the board remembers your choice while it is open.
@@ -124,7 +138,7 @@ All commands are in the Command Palette (`Ctrl+Shift+P`) under **Projects Hub**,
 | Save Current Project · Add Project Folder… | Palette, sidebar |
 | Create Group · Create Tag · Manage Custom Statuses… | Palette, sidebar |
 | Switch View (Group / Tag / Status) | Sidebar |
-| Set Status… · Move to Group… · Edit Tags… · Edit Note… | Right-click a project |
+| To-dos… · Open Note · Set Status… · Move to Group… · Edit Tags… | Right-click a project |
 | Pin / Unpin · Rename · Remove · Open in New Window | Right-click a project |
 | Change Book Color… | Right-click a project, or a book on the shelf |
 | Rename · Change Color · Delete | Right-click a group or tag |

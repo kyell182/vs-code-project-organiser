@@ -23,6 +23,8 @@ The code is organized **per feature**, not per technical type.
 | `storage/` | The saved model (`OrganizerState`), the `StateStore` abstraction and `GlobalStateStore` (VS Code global state + Settings Sync). |
 | `projects/` | Saving and opening projects, notes, assigning status, group and tags. |
 | `statuses/` | Built-in and custom statuses, `StatusResolver` (automatic or manual), status picker and management. |
+| `todos/` | To-dos per project: service, progress (pure), the to-do picker and commands. |
+| `notes/` | Markdown notes: a virtual file system (`projectshub-note:`) so a note opens and saves like a normal file; `noteSummary` (pure). |
 | `groups/` | Virtual groups with a color. Never touches folders on disk. |
 | `tags/` | Colored tags and the tag picker. |
 | `colors/` | Color model (palette or hex), color picker, generated SVG icons, recent colors. |
@@ -104,8 +106,15 @@ classDiagram
         lastOpened?
         isPinned
         note?
+        noteUpdatedAt?
+        todos?: TodoRecord[]
         color?
         order?
+    }
+    class TodoRecord {
+        id
+        text
+        isDone
     }
     class GroupRecord {
         id
@@ -136,6 +145,7 @@ classDiagram
     ProjectRecord "*" --> "*" TagRecord : tagIds
     ProjectRecord "*" --> "0..1" CustomStatusRecord : manualStatus
     ProjectRecord ..> Color : book color
+    ProjectRecord "1" *-- "*" TodoRecord
     GroupRecord ..> Color
     TagRecord ..> Color
     CustomStatusRecord ..> Color
