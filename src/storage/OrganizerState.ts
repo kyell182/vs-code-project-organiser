@@ -13,6 +13,10 @@ export interface ProjectRecord {
   lastOpened?: number;
   isPinned: boolean;
   note?: string;
+  /** Book color on the shelf; without one a stable color is derived from the id. */
+  color?: Color;
+  /** Position within its status column or shelf, set by dragging; lower comes first. */
+  order?: number;
 }
 
 export interface GroupRecord {

@@ -1,34 +1,85 @@
 import * as vscode from 'vscode';
-import { ProjectView } from './ProjectView';
+import { Color, readableTextOn, toHex } from '../colors/Color';
+import { DEFAULT_GROUP_COLOR } from '../groups/GroupService';
+import { formatRelativeTime } from '../shared/relativeTime';
 import { statusLabel } from '../statuses/StatusAppearance';
+import { ProjectView } from './ProjectView';
 
-export function buildProjectTooltip(view: ProjectView): vscode.MarkdownString {
+/** Commands the action links at the bottom may run; nothing else is trusted. */
+const ACTIONS: readonly { command: string; icon: string; label: string }[] = [
+  { command: 'projectsHub.openProject', icon: 'folder-opened', label: vscode.l10n.t('Open') },
+  { command: 'projectsHub.openProjectInNewWindow', icon: 'empty-window', label: vscode.l10n.t('New window') },
+  { command: 'projectsHub.editTags', icon: 'tag', label: vscode.l10n.t('Tags') },
+  { command: 'projectsHub.setStatus', icon: 'circle-filled', label: vscode.l10n.t('Status') },
+  { command: 'projectsHub.editNote', icon: 'note', label: vscode.l10n.t('Note') },
+];
+
+/** A compact hover: name and status, path, colored group and tag chips, last opened, note and quick actions. */
+export function buildProjectTooltip(view: ProjectView, now: number = Date.now()): vscode.MarkdownString {
   const lines = [
-    `### ${escape(view.project.name)}`,
+    header(view),
     `$(folder) \`${inCode(view.project.path)}\``,
-    '',
-    `**${vscode.l10n.t('Status')}:** ${statusLabel(view.status)}${view.project.manualStatus ? '' : ` _(${vscode.l10n.t('automatic')})_`}`,
-    `**${vscode.l10n.t('Group')}:** ${escape(view.groupName ?? vscode.l10n.t('none'))}`,
-    `**${vscode.l10n.t('Tags')}:** ${view.tags.length > 0 ? view.tags.map((tag) => `\`#${inCode(tag.name)}\``).join(' ') : vscode.l10n.t('none')}`,
-    `**${vscode.l10n.t('Last opened')}:** ${formatLastOpened(view.project.lastOpened)}`,
-  ];
-  if (view.project.note) {
-    lines.push(`$(note) _${escape(view.project.note)}_`);
-  }
-  if (view.isMissing) {
-    lines.push('', `$(warning) **${vscode.l10n.t('This folder no longer exists.')}**`);
-  }
-  const markdown = new vscode.MarkdownString(lines.join('\n\n'), true);
+    chipsLine(view),
+    lastOpenedLine(view.project.lastOpened, now),
+    view.project.note ? `$(note) _${escape(view.project.note)}_` : '',
+    view.isMissing ? `$(warning) **${escape(vscode.l10n.t('This folder no longer exists.'))}**` : '',
+  ].filter((line) => line.length > 0);
+  const markdown = new vscode.MarkdownString(`${lines.join('  \n')}\n\n---\n\n${actionLinks(view)}`, true);
+  markdown.supportHtml = true;
+  markdown.isTrusted = { enabledCommands: ACTIONS.map((action) => action.command) };
   return markdown;
 }
 
-function formatLastOpened(timestamp: number | undefined): string {
-  return timestamp === undefined ? vscode.l10n.t('never') : new Date(timestamp).toLocaleString();
+function header(view: ProjectView): string {
+  const status = colored(`● ${statusLabel(view.status)}`, view.status.color);
+  const automatic = view.project.manualStatus ? '' : ` _(${escape(vscode.l10n.t('automatic'))})_`;
+  return `**${escape(view.project.name)}** &nbsp; ${status}${automatic}`;
+}
+
+function chipsLine(view: ProjectView): string {
+  const group = view.group ? [chip(`$(folder) ${view.group.name}`, view.group.color ?? DEFAULT_GROUP_COLOR)] : [];
+  const tags = view.tags.map((tag) => chip(`#${tag.name}`, tag.color));
+  return [...group, ...tags].join(' ');
+}
+
+function lastOpenedLine(timestamp: number | undefined, now: number): string {
+  if (timestamp === undefined) {
+    return `$(history) ${escape(vscode.l10n.t('Never opened'))}`;
+  }
+  const relative = formatRelativeTime(timestamp, now, vscode.env.language);
+  const exact = new Date(timestamp).toLocaleString(vscode.env.language);
+  return `$(history) ${escape(vscode.l10n.t('Opened {0}', relative))} · <span style="color:#8c8c8c;">${escapeHtml(exact)}</span>`;
+}
+
+/** Commands get the project the same way as from the sidebar: as `{ project }`. */
+function actionLinks(view: ProjectView): string {
+  const argument = encodeURIComponent(JSON.stringify([{ project: view.project }]));
+  return ACTIONS.map((action) => `[$(${action.icon}) ${escape(action.label)}](command:${action.command}?${argument})`).join(' &nbsp;·&nbsp; ');
+}
+
+/** Hovers only allow inline color and background-color styles, which is exactly what chips need. */
+function chip(text: string, color: Color): string {
+  const style = `color:${readableTextOn(color)};background-color:${toHex(color)};`;
+  return `<span style="${style}">&nbsp;${escapeLabel(text)}&nbsp;</span>`;
+}
+
+function colored(text: string, color: Color): string {
+  return `<span style="color:${toHex(color)};">${escapeLabel(text)}</span>`;
+}
+
+/** Keeps a leading $(icon) working while escaping the rest of the user text. */
+function escapeLabel(text: string): string {
+  const icon = /^(\$\([a-z-]+\) )/.exec(text)?.[1] ?? '';
+  return icon + escapeHtml(escape(text.slice(icon.length)));
 }
 
 /** Project names come from the user, so keep them from being read as markdown. */
 function escape(text: string): string {
   return text.replace(/[\\`*_{}[\]()#+\-.!|<>]/g, '\\$&');
+}
+
+function escapeHtml(text: string): string {
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 /** Inside a code span only backticks can break out. */

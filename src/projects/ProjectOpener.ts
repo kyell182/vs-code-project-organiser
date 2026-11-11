@@ -17,7 +17,11 @@ export class ProjectOpener {
     }
     // Recorded before opening: opening in the same window reloads the extension host.
     await this.projects.markOpened(project.path, Date.now());
-    await vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(project.path), { forceNewWindow });
+    // forceReuseWindow overrides VS Code's own window.openFoldersInNewWindow, so a plain open stays in this window.
+    await vscode.commands.executeCommand('vscode.openFolder', vscode.Uri.file(project.path), {
+      forceNewWindow,
+      forceReuseWindow: !forceNewWindow,
+    });
   }
 
   private async offerRemoval(project: ProjectRecord): Promise<void> {

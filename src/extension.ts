@@ -13,6 +13,7 @@ import { GroupService } from './groups/GroupService';
 import { ProjectCommands } from './projects/ProjectCommands';
 import { ProjectOpener } from './projects/ProjectOpener';
 import { ProjectOrganizeCommands } from './projects/ProjectOrganizeCommands';
+import { ProjectPlacement } from './projects/ProjectPlacement';
 import { ProjectService } from './projects/ProjectService';
 import { registerSafeCommand } from './shared/registerSafeCommand';
 import { Settings } from './shared/Settings';
@@ -118,6 +119,7 @@ function createBoard(context: vscode.ExtensionContext, core: Core): ProjectBoard
     store: core.store,
     projects: core.projects,
     opener: core.opener,
+    placement: new ProjectPlacement(core.store, core.resolver),
     context: () => ({ resolver: core.resolver, inspector, currentPath: core.currentPath() }),
   });
   context.subscriptions.push(registerSafeCommand('projectsHub.openBoard', async () => board.show()));
@@ -126,7 +128,7 @@ function createBoard(context: vscode.ExtensionContext, core: Core): ProjectBoard
 
 function registerCommands(core: Core): vscode.Disposable[] {
   const groupPicker = new GroupPicker(core.groups, core.colors);
-  const pickers = { status: new StatusPicker(core.store), group: groupPicker, tag: new TagPicker(core.tags, core.colors) };
+  const pickers = { status: new StatusPicker(core.store), group: groupPicker, tag: new TagPicker(core.tags, core.colors), color: core.colors };
   return [
     new QuickSwitcher(core.store, core.resolver, core.opener).register(),
     ...new ProjectCommands(core.projects, core.opener).register(),

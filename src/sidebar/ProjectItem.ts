@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import { coloredTagList } from '../colors/colorEmoji';
 import { ProjectTarget } from '../shared/TreeTargets';
 import { ProjectRecord } from '../storage/OrganizerState';
 import { ProjectDecorations } from './ProjectDecorations';
@@ -36,10 +35,8 @@ export class ProjectItem extends vscode.TreeItem implements ProjectTarget {
     return { label, highlights: view.isCurrent ? [[0, label.length]] : undefined };
   }
 
+  /** Kept short on purpose: tags and the note are in the tooltip. */
   private static buildDescription(view: ProjectView): string {
-    const tags = coloredTagList(view.tags);
-    const current = view.isCurrent ? `● ${vscode.l10n.t('open')}` : '';
-    const note = view.project.note ? `✎ ${view.project.note}` : '';
-    return [current, tags, note].filter((part) => part.length > 0).join('  ');
+    return view.isCurrent ? `● ${vscode.l10n.t('open')}` : '';
   }
 }

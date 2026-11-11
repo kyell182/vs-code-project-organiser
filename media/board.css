@@ -6,14 +6,6 @@
   --muted: var(--vscode-descriptionForeground);
 }
 
-.c-red { --accent: var(--vscode-charts-red); }
-.c-orange { --accent: var(--vscode-charts-orange); }
-.c-yellow { --accent: var(--vscode-charts-yellow); }
-.c-green { --accent: var(--vscode-charts-green); }
-.c-blue { --accent: var(--vscode-charts-blue); }
-.c-purple { --accent: var(--vscode-charts-purple); }
-.c-gray { --accent: var(--vscode-descriptionForeground); }
-
 body {
   margin: 0;
   padding: 0 16px 16px;
@@ -48,6 +40,32 @@ body {
 #search:focus { border-color: var(--vscode-focusBorder); }
 
 .summary { color: var(--muted); }
+
+.view-switch {
+  display: inline-flex;
+  padding: 2px;
+  border-radius: 6px;
+  background: var(--vscode-input-background);
+  border: 1px solid var(--vscode-input-border, var(--border));
+}
+
+.view-switch button {
+  padding: 4px 12px;
+  border: none;
+  border-radius: 4px;
+  color: var(--vscode-foreground);
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.view-switch button[aria-pressed="true"] {
+  color: var(--vscode-button-foreground);
+  background: var(--vscode-button-background);
+}
+
+/* Shows where a dragged project will land. */
+.card.insert-before { box-shadow: 0 -3px 0 var(--vscode-focusBorder); }
 
 .board {
   display: grid;

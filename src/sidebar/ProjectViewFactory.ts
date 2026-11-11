@@ -20,7 +20,7 @@ export class ProjectViewFactory {
       project,
       status: this.resolver.resolve(project, state, now),
       tags: state.tags.filter((tag) => project.tagIds.includes(tag.id)),
-      groupName: state.groups.find((group) => group.id === project.groupId)?.name,
+      group: state.groups.find((group) => group.id === project.groupId),
       isCurrent: currentPath !== undefined && isSamePath(currentPath, project.path),
       isMissing: !this.environment.folderExists(project.path),
     };

@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { ProjectOpener } from '../projects/ProjectOpener';
+import { ProjectPlacement } from '../projects/ProjectPlacement';
 import { ProjectService } from '../projects/ProjectService';
 import { reportErrors } from '../shared/reportErrors';
 import { StateStore } from '../storage/StateStore';
@@ -10,10 +11,21 @@ import { buildBoardHtml } from './boardHtml';
 
 const VIEW_TYPE = 'projectsHub.board';
 
+/** Helpers first, then the two views, then the entry script that uses them. */
+const BOARD_SCRIPTS = ['board-common.js', 'board-columns.js', 'board-shelf.js', 'board.js'];
+const BOARD_STYLES = ['board.css', 'board-shelf.css'];
+
+/** Requests that are simply the matching sidebar command run on that project. */
+const REQUEST_COMMANDS = {
+  editNote: 'projectsHub.editNote',
+  setBookColor: 'projectsHub.setBookColor',
+} as const;
+
 export interface BoardDependencies {
   store: StateStore;
   projects: ProjectService;
   opener: ProjectOpener;
+  placement: ProjectPlacement;
   context: () => BoardContext;
 }
 
@@ -49,8 +61,8 @@ export class ProjectBoardPanel {
     });
     panel.iconPath = new vscode.ThemeIcon('layout');
     panel.webview.html = buildBoardHtml({
-      script: panel.webview.asWebviewUri(vscode.Uri.joinPath(media, 'board.js')),
-      style: panel.webview.asWebviewUri(vscode.Uri.joinPath(media, 'board.css')),
+      scripts: BOARD_SCRIPTS.map((name) => panel.webview.asWebviewUri(vscode.Uri.joinPath(media, name))),
+      styles: BOARD_STYLES.map((name) => panel.webview.asWebviewUri(vscode.Uri.joinPath(media, name))),
       cspSource: panel.webview.cspSource,
     });
     panel.webview.onDidReceiveMessage((request: BoardRequest) => reportErrors(() => this.handle(request)));
@@ -75,10 +87,10 @@ export class ProjectBoardPanel {
     }
     if (request.type === 'open') {
       await this.dependencies.opener.open(project, request.newWindow || undefined);
-    } else if (request.type === 'setStatus') {
-      await this.dependencies.projects.setStatus(project.id, request.statusId);
+    } else if (request.type === 'move') {
+      await this.dependencies.placement.move({ projectId: project.id, statusId: request.statusId, beforeId: request.beforeId }, Date.now());
     } else {
-      await vscode.commands.executeCommand('projectsHub.editNote', { project });
+      await vscode.commands.executeCommand(REQUEST_COMMANDS[request.type], { project });
     }
   }
 }

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { Color } from './Color';
-import { colorIcon, colorLabel } from './ColorAppearance';
+import { colorLabel, pickerIcon } from './ColorAppearance';
 import { CustomColorPanel } from './CustomColorPanel';
 import { ALL_PALETTE_COLORS } from './PaletteColor';
 import { RecentColors } from './RecentColors';
@@ -32,13 +32,13 @@ export class ColorPicker {
       label: colorLabel(color),
       description: vscode.l10n.t('adapts to your theme'),
       color,
-      iconPath: colorIcon('circle-filled', color),
+      iconPath: pickerIcon('circle', color),
     }));
     const recent: ColorItem[] = this.recent.list().map((color) => ({
       label: colorLabel(color),
       description: vscode.l10n.t('recently used'),
       color,
-      iconPath: colorIcon('circle', color),
+      iconPath: pickerIcon('circle', color),
     }));
     const separator: ColorItem = { label: vscode.l10n.t('Custom'), kind: vscode.QuickPickItemKind.Separator };
     const custom: ColorItem = { label: vscode.l10n.t('Custom color...'), iconPath: new vscode.ThemeIcon('symbol-color') };

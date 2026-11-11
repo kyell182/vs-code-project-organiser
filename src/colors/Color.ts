@@ -8,6 +8,8 @@ export type HexColor = `#${string}`;
 export type Color = PaletteColor | HexColor;
 
 const HEX_PATTERN = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i;
+/** Perceived brightness above which dark text is easier to read than white text. */
+const LIGHT_BACKGROUND_THRESHOLD = 0.6;
 
 /**
  * Typical dark-theme values of the palette, used to find the palette color closest to a custom
@@ -44,6 +46,18 @@ export function normalizeHex(value: string): HexColor {
 /** Validates a color coming from the UI or from older saved data. */
 export function requireColor(value: string): Color {
   return isPaletteColor(value) ? value : normalizeHex(value);
+}
+
+/** A fixed hex value for any color, for places that cannot follow the theme. */
+export function toHex(color: Color): HexColor {
+  return isPaletteColor(color) ? (PALETTE_REFERENCE[color] as HexColor) : color;
+}
+
+/** Black or white, whichever reads better on the given background color. */
+export function readableTextOn(color: Color): HexColor {
+  const [red, green, blue] = toRgb(toHex(color));
+  const luminance = (0.299 * red + 0.587 * green + 0.114 * blue) / 255;
+  return luminance > LIGHT_BACKGROUND_THRESHOLD ? '#000000' : '#ffffff';
 }
 
 export function nearestPaletteColor(color: Color): PaletteColor {

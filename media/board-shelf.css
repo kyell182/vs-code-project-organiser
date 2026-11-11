@@ -1,0 +1,181 @@
+/* Bookcase view: a shelf per status, books with their own color and a ribbon per tag. */
+
+.bookcase {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding-bottom: 24px;
+}
+
+.shelf { display: flex; flex-direction: column; }
+
+.shelf-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 4px 8px;
+  font-weight: 600;
+}
+
+.shelf-header .count { margin-left: 8px; }
+
+.books {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 5px;
+  min-height: 180px;
+  padding: 10px 14px 0;
+  border-radius: 8px 8px 0 0;
+  background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--accent) 8%, transparent));
+  transition: background 120ms ease;
+}
+
+.books.drop-target { background: color-mix(in srgb, var(--accent) 18%, transparent); }
+
+/* An empty shelf only needs room for the hint; it grows while a book is dragged over it. */
+.books.is-empty { min-height: 56px; }
+.books.is-empty.drop-target { min-height: 180px; }
+
+.shelf-empty {
+  align-self: center;
+  margin: auto;
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* The plank takes a little of the status color so each shelf is recognisable. */
+.plank {
+  height: 12px;
+  border-radius: 2px 2px 6px 6px;
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--accent) 35%, #8a6a46), color-mix(in srgb, var(--accent) 20%, #5c4430));
+  box-shadow: 0 4px 8px var(--vscode-widget-shadow, rgba(0, 0, 0, 0.3));
+}
+
+.book {
+  --book: var(--vscode-charts-blue);
+  position: relative;
+  width: 40px;
+  border-radius: 3px 3px 1px 1px;
+  background: linear-gradient(to right,
+    color-mix(in srgb, var(--book) 70%, black) 0,
+    var(--book) 18%,
+    color-mix(in srgb, var(--book) 85%, white) 50%,
+    var(--book) 82%,
+    color-mix(in srgb, var(--book) 65%, black) 100%);
+  box-shadow: inset 0 -6px 0 color-mix(in srgb, var(--book) 60%, black), 1px 0 2px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.book:hover, .book:focus-visible {
+  transform: translateY(-6px);
+  outline: none;
+  box-shadow: inset 0 -6px 0 color-mix(in srgb, var(--book) 60%, black), 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.book.current { outline: 2px solid var(--vscode-focusBorder); outline-offset: 2px; }
+.book.missing { opacity: 0.5; filter: grayscale(0.6); }
+.book.dragging { opacity: 0.35; }
+.book.insert-before { box-shadow: -5px 0 0 var(--vscode-focusBorder); }
+
+/*
+ * Tag ribbons hang out of the top of the book like bookmarks. The outer element carries the
+ * outline and shadow, because a filter on the clipped element itself would be clipped away.
+ */
+.ribbons {
+  position: absolute;
+  top: -5px;
+  left: 4px;
+  display: flex;
+  gap: 2px;
+}
+
+.ribbon {
+  width: 9px;
+  height: 30px;
+  filter: drop-shadow(1px 0 0 #000) drop-shadow(-1px 0 0 #000) drop-shadow(0 1px 0 #000) drop-shadow(0 2px 2px rgba(0, 0, 0, 0.6));
+}
+
+.ribbon::before {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, color-mix(in srgb, var(--accent) 70%, white), var(--accent) 60%, color-mix(in srgb, var(--accent) 80%, black));
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%);
+}
+
+.ribbon-group { width: 16px; }
+
+.ribbon-group::before { background: var(--stripes); }
+
+/* Sits on top of the ribbon shape; pointer events stay on the ribbon for its own tooltip. */
+.ribbon-count {
+  position: absolute;
+  top: 3px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-shadow: 0 0 2px #000, 0 0 2px #000;
+  pointer-events: none;
+}
+
+.ribbon { position: relative; }
+
+.spine-title {
+  position: absolute;
+  inset: 34px 0 22px;
+  display: block;
+  overflow: hidden;
+  text-align: center;
+  line-height: 40px;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 0.85em;
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+.book-pin {
+  position: absolute;
+  bottom: 7px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.75em;
+  color: var(--vscode-charts-yellow);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 10;
+  max-width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  color: var(--vscode-editorHoverWidget-foreground, var(--vscode-foreground));
+  background: var(--vscode-editorHoverWidget-background, var(--card-bg));
+  border: 1px solid var(--vscode-editorHoverWidget-border, var(--border));
+  box-shadow: 0 4px 14px var(--vscode-widget-shadow, rgba(0, 0, 0, 0.35));
+  pointer-events: none;
+}
+
+.tooltip[hidden] { display: none; }
+.tip-title { font-size: 1.05em; }
+.tip-status { display: flex; align-items: center; gap: 6px; color: var(--accent); font-weight: 600; }
+.tip-row { display: flex; gap: 8px; align-items: flex-start; font-size: 0.9em; }
+.tooltip .chips { max-width: 190px; }
+.tip-label { min-width: 76px; color: var(--muted); }
+.tip-note { font-style: italic; }
+.tip-hint { margin-top: 4px; font-size: 0.8em; color: var(--muted); }

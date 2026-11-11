@@ -1,6 +1,6 @@
 import * as assert from 'assert';
-import { isHexColor, nearestPaletteColor, normalizeHex, requireColor } from '../src/colors/Color';
-import { coloredTagList } from '../src/colors/colorEmoji';
+import { isHexColor, nearestPaletteColor, normalizeHex, requireColor, toHex } from '../src/colors/Color';
+import { colorDot } from '../src/colors/colorEmoji';
 import { PaletteColor } from '../src/colors/PaletteColor';
 import { DomainError } from '../src/shared/DomainError';
 import { TagService } from '../src/tags/TagService';
@@ -23,14 +23,20 @@ describe('Color', () => {
     assert.strictEqual(nearestPaletteColor(PaletteColor.Purple), PaletteColor.Purple);
   });
 
+  it('gives every color a fixed hex value for quick pick icons', () => {
+    assert.strictEqual(toHex(PaletteColor.Green), '#89d185');
+    assert.strictEqual(toHex('#ff66cc'), '#ff66cc');
+  });
+
   it('maps a custom color to the closest palette color', () => {
     assert.strictEqual(nearestPaletteColor('#ff0000'), PaletteColor.Red);
     assert.strictEqual(nearestPaletteColor('#2080ff'), PaletteColor.Blue);
     assert.strictEqual(nearestPaletteColor('#a0a0a0'), PaletteColor.Gray);
   });
 
-  it('shows tags as colored dots, using the closest dot for custom colors', () => {
-    assert.strictEqual(coloredTagList([{ name: 'web', color: PaletteColor.Blue }, { name: 'pink', color: '#ff0010' }]), '🔵 web  🔴 pink');
+  it('gives tags a colored dot, using the closest dot for custom colors', () => {
+    assert.strictEqual(colorDot(PaletteColor.Blue), '🔵');
+    assert.strictEqual(colorDot('#ff0010'), '🔴');
   });
 
   it('lets services store a normalized custom color', async () => {

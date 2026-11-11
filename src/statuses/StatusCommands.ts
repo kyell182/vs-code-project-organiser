@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { colorIcon } from '../colors/ColorAppearance';
+import { pickerIcon } from '../colors/ColorAppearance';
 import { ColorPicker } from '../colors/ColorPicker';
 import { registerSafeCommand } from '../shared/registerSafeCommand';
 import { CustomStatusRecord } from '../storage/OrganizerState';
@@ -28,7 +28,7 @@ export class StatusCommands {
     const items: StatusItem[] = this.statuses.listCustom().map((status) => ({
       label: status.name,
       status,
-      iconPath: colorIcon('circle-filled', status.color),
+      iconPath: pickerIcon('circle-filled', status.color),
     }));
     const create: StatusItem = { label: vscode.l10n.t('New status...'), iconPath: new vscode.ThemeIcon('add') };
     const picked = await vscode.window.showQuickPick([create, ...items], { placeHolder: vscode.l10n.t('Your own statuses') });

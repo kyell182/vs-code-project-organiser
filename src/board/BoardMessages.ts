@@ -4,8 +4,9 @@ import { BoardColumn } from './BoardModel';
 export type BoardRequest =
   | { type: 'ready' }
   | { type: 'open'; projectId: string; newWindow: boolean }
-  | { type: 'setStatus'; projectId: string; statusId: string }
-  | { type: 'editNote'; projectId: string };
+  | { type: 'move'; projectId: string; statusId: string; beforeId?: string }
+  | { type: 'editNote'; projectId: string }
+  | { type: 'setBookColor'; projectId: string };
 
 /** The extension sends the full board each time something changes; the page simply re-renders. */
 export interface BoardRender {

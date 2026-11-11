@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { StateStore } from '../storage/StateStore';
 import { StatusId } from '../storage/OrganizerState';
-import { statusIcon, statusLabel } from './StatusAppearance';
+import { statusLabel, statusPickerIcon } from './StatusAppearance';
 import { listStatuses } from './StatusCatalog';
 
 export interface StatusChoice {
@@ -25,7 +25,7 @@ export class StatusPicker {
     const manual: StatusItem[] = listStatuses(this.store.read()).map((status) => ({
       label: statusLabel(status),
       statusId: status.id,
-      iconPath: statusIcon(status),
+      iconPath: statusPickerIcon(status),
       description: status.id === current ? vscode.l10n.t('current') : undefined,
     }));
     const picked = await vscode.window.showQuickPick([automatic, ...manual], { placeHolder: vscode.l10n.t('Set the project status') });

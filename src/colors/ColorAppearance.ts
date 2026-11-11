@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Color, isPaletteColor, nearestPaletteColor } from './Color';
+import { Color, isPaletteColor, nearestPaletteColor, toHex } from './Color';
 import { colorIconUri } from './ColorIconFiles';
 import { PaletteColor } from './PaletteColor';
 
@@ -36,6 +36,11 @@ export function colorLabel(color: Color): string {
  */
 export function themeColorFor(color: Color): vscode.ThemeColor {
   return new vscode.ThemeColor(THEME_COLOR_IDS[nearestPaletteColor(color)]);
+}
+
+/** Quick picks ignore the color of theme icons, so every color is drawn as an SVG there. */
+export function pickerIcon(icon: string, color: Color): vscode.Uri {
+  return colorIconUri(icon, toHex(color));
 }
 
 /** Palette colors use a themed codicon; custom colors use a generated SVG in that exact color. */

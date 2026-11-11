@@ -1,3 +1,4 @@
+import { Color, requireColor } from '../colors/Color';
 import { DomainError } from '../shared/DomainError';
 import { IdGenerator } from '../shared/IdGenerator';
 import { requireById, requireName } from '../shared/NameValidation';
@@ -62,6 +63,11 @@ export class ProjectService {
   setNote(id: string, note: string): Promise<void> {
     const trimmed = note.trim();
     return this.update(id, (project) => (project.note = trimmed.length > 0 ? trimmed : undefined));
+  }
+
+  setColor(id: string, color: Color): Promise<void> {
+    const valid = requireColor(color);
+    return this.update(id, (project) => (project.color = valid));
   }
 
   assignGroup(id: string, groupId: string | undefined): Promise<void> {

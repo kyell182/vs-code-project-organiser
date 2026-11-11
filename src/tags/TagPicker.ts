@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { TagRecord } from '../storage/OrganizerState';
-import { colorIcon } from '../colors/ColorAppearance';
+import { pickerIcon } from '../colors/ColorAppearance';
 import { ColorPicker } from '../colors/ColorPicker';
 import { TagService } from './TagService';
 
@@ -31,7 +31,7 @@ export class TagPicker {
 
   private async show(tags: TagRecord[], selectedIds: string[]): Promise<TagItem[] | undefined> {
     const quickPick = vscode.window.createQuickPick<TagItem>();
-    const tagItems: TagItem[] = tags.map((tag) => ({ label: tag.name, tagId: tag.id, iconPath: colorIcon('tag', tag.color) }));
+    const tagItems: TagItem[] = tags.map((tag) => ({ label: tag.name, tagId: tag.id, iconPath: pickerIcon('tag', tag.color) }));
     quickPick.canSelectMany = true;
     quickPick.placeholder = vscode.l10n.t('Select tags, or type a name to create a new tag');
     quickPick.items = tagItems;

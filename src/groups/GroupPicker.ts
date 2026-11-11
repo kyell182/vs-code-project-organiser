@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { colorIcon } from '../colors/ColorAppearance';
+import { pickerIcon } from '../colors/ColorAppearance';
 import { ColorPicker } from '../colors/ColorPicker';
 import { GroupRecord } from '../storage/OrganizerState';
 import { DEFAULT_GROUP_COLOR, GroupService } from './GroupService';
@@ -40,7 +40,7 @@ export class GroupPicker {
     const groups: GroupItem[] = this.groups.list().map((group) => ({
       label: group.name,
       groupId: group.id,
-      iconPath: colorIcon('folder', group.color ?? DEFAULT_GROUP_COLOR),
+      iconPath: pickerIcon('folder', group.color ?? DEFAULT_GROUP_COLOR),
       description: group.id === currentGroupId ? current : undefined,
     }));
     const none: GroupItem = { label: vscode.l10n.t('No group'), iconPath: new vscode.ThemeIcon('circle-slash') };

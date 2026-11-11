@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { ColorPicker } from '../colors/ColorPicker';
 import { GroupPicker } from '../groups/GroupPicker';
 import { registerSafeCommand } from '../shared/registerSafeCommand';
 import { ProjectTarget } from '../shared/TreeTargets';
@@ -10,9 +11,10 @@ export interface OrganizePickers {
   status: StatusPicker;
   group: GroupPicker;
   tag: TagPicker;
+  color: ColorPicker;
 }
 
-/** Giving a project its status, group, tags and note. */
+/** Giving a project its status, group, tags, note and book color. */
 export class ProjectOrganizeCommands {
   constructor(
     private readonly projects: ProjectService,
@@ -25,6 +27,7 @@ export class ProjectOrganizeCommands {
       registerSafeCommand<ProjectTarget>('projectsHub.assignGroup', (item) => this.assignGroup(item)),
       registerSafeCommand<ProjectTarget>('projectsHub.editTags', (item) => this.editTags(item)),
       registerSafeCommand<ProjectTarget>('projectsHub.editNote', (item) => this.editNote(item)),
+      registerSafeCommand<ProjectTarget>('projectsHub.setBookColor', (item) => this.setBookColor(item)),
     ];
   }
 
@@ -46,6 +49,13 @@ export class ProjectOrganizeCommands {
     const tagIds = await this.pickers.tag.pick(item.project.tagIds);
     if (tagIds) {
       await this.projects.setTags(item.project.id, tagIds);
+    }
+  }
+
+  private async setBookColor(item: ProjectTarget): Promise<void> {
+    const color = await this.pickers.color.pick(item.project.name);
+    if (color) {
+      await this.projects.setColor(item.project.id, color);
     }
   }
 
