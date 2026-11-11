@@ -5,8 +5,8 @@ Meant for publishing on the Marketplace: all code, UI text and names are in Engl
 
 ## Architectuur
 - `src/extension.ts` – startpunt en composition root: maakt alle onderdelen aan en koppelt ze.
-- `storage/` – `OrganizerState` (opgeslagen model), `StateStore`-abstractie, `GlobalStateStore` (VS Code global state + Settings Sync).
-- `projects/` – projecten opslaan/openen, notities, boekkleur, status/groep/tags toewijzen, volgorde bij slepen (`ProjectPlacement`, `shelfOrder`). Gebruikt `statuses/`, `groups/` en `tags/`.
+- `storage/` – `OrganizerState` (opgeslagen model), `StateStore`-abstractie, `GlobalStateStore` (VS Code global state + Settings Sync), `MachinePathStore` (pad per computer onder `projectsHub.machinePaths`, nooit gesynct, legt zich over de gesyncte state).
+- `projects/` – projecten opslaan/openen, ontbrekende map terugvinden (`FolderLocator`, Locate Folder), notities, boekkleur, status/groep/tags toewijzen, volgorde bij slepen (`ProjectPlacement`, `shelfOrder`). Gebruikt `statuses/`, `groups/` en `tags/`.
 - `statuses/` – ingebouwde en eigen statussen (`StatusCatalog`), `StatusResolver` (automatisch of handmatig), statuskiezer en -beheer.
 - `todos/` – to-do's per project: `TodoService`, `todoProgress` (pure), `TodoPicker`, commando's.
 - `notes/` – Markdown-notitie in een editor-tab via `NoteFileSystem` (schema `projectshub-note:`), `noteSummary` (pure).

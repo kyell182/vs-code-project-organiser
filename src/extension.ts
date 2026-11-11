@@ -13,6 +13,8 @@ import { NOTE_SCHEME, NoteFileSystem } from './notes/NoteFileSystem';
 import { GroupPicker } from './groups/GroupPicker';
 import { GroupService } from './groups/GroupService';
 import { ProjectCommands } from './projects/ProjectCommands';
+import { FolderLocator } from './projects/FolderLocator';
+import { LocateFolderCommand } from './projects/LocateFolderCommand';
 import { ProjectOpener } from './projects/ProjectOpener';
 import { ProjectOrganizeCommands } from './projects/ProjectOrganizeCommands';
 import { ProjectPlacement } from './projects/ProjectPlacement';
@@ -32,6 +34,8 @@ import { StatusPicker } from './statuses/StatusPicker';
 import { StatusResolver } from './statuses/StatusResolver';
 import { StatusService } from './statuses/StatusService';
 import { GlobalStateStore } from './storage/GlobalStateStore';
+import { MachinePaths } from './storage/MachinePaths';
+import { MachinePathStore } from './storage/MachinePathStore';
 import { CurrentProjectStatusBar } from './switcher/CurrentProjectStatusBar';
 import { QuickSwitcher } from './switcher/QuickSwitcher';
 import { TagCommands } from './tags/TagCommands';
@@ -45,7 +49,8 @@ const VIEW_ID = 'projectsHub.projects';
 
 interface Core {
   settings: Settings;
-  store: GlobalStateStore;
+  store: MachinePathStore;
+  locator: FolderLocator;
   projects: ProjectService;
   groups: GroupService;
   tags: TagService;
@@ -81,22 +86,25 @@ export function activate(context: vscode.ExtensionContext): void {
 
 function createCore(context: vscode.ExtensionContext): Core {
   const settings = new Settings();
-  const store = new GlobalStateStore(context.globalState);
+  const syncedStore = new GlobalStateStore(context.globalState);
+  const store = new MachinePathStore(syncedStore, new MachinePaths(context.globalState));
   const ids = { next: () => randomUUID() };
   const projects = new ProjectService(store, ids);
+  const locator = new FolderLocator(projects, store);
   const recentColors = new RecentColors(context.globalState);
   configureColorIconFolder(vscode.Uri.joinPath(context.extensionUri, 'media', 'color-icons'));
-  context.subscriptions.push(store);
+  context.subscriptions.push(syncedStore);
   return {
     settings,
     store,
+    locator,
     projects,
     groups: new GroupService(store, ids),
     tags: new TagService(store, ids),
     statuses: new StatusService(store, ids),
     todos: new TodoService(store, ids),
     resolver: new StatusResolver(() => settings.inactiveAfterDays()),
-    opener: new ProjectOpener(projects, settings),
+    opener: new ProjectOpener(projects, settings, locator),
     colors: new ColorPicker(new CustomColorPanel(context.extensionUri, recentColors), recentColors),
     currentPath: () => vscode.workspace.workspaceFolders?.[0]?.uri.fsPath,
   };
@@ -139,6 +147,7 @@ function registerCommands(core: Core): vscode.Disposable[] {
   return [
     new QuickSwitcher(core.store, core.resolver, core.opener).register(),
     ...new ProjectCommands(core.projects, core.opener).register(),
+    new LocateFolderCommand(core.locator).register(),
     ...new ProjectOrganizeCommands(core.projects, pickers).register(),
     ...new GroupCommands(core.groups, groupPicker, core.colors).register(),
     ...new TagCommands(core.tags, core.colors).register(),

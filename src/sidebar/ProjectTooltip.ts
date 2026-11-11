@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { Color, readableTextOn, toHex } from '../colors/Color';
 import { DEFAULT_GROUP_COLOR } from '../groups/GroupService';
 import { noteSummary } from '../notes/noteSummary';
+import { LOCATE_FOLDER_COMMAND } from '../projects/LocateFolderCommand';
 import { formatRelativeTime } from '../shared/relativeTime';
 import { statusLabel } from '../statuses/StatusAppearance';
 import { todoProgress } from '../todos/todoProgress';
@@ -29,11 +30,11 @@ export function buildProjectTooltip(view: ProjectView, now: number = Date.now())
     lastOpenedLine(view.project.lastOpened, now),
     noteLine(view.project.note),
     todoLines(view),
-    view.isMissing ? `$(warning) **${escape(vscode.l10n.t('This folder no longer exists.'))}**` : '',
+    missingLine(view),
   ].filter((line) => line.length > 0);
   const markdown = new vscode.MarkdownString(`${lines.join('  \n')}\n\n---\n\n${actionLinks(view)}`, true);
   markdown.supportHtml = true;
-  markdown.isTrusted = { enabledCommands: ACTIONS.map((action) => action.command) };
+  markdown.isTrusted = { enabledCommands: [...ACTIONS.map((action) => action.command), LOCATE_FOLDER_COMMAND] };
   return markdown;
 }
 
@@ -74,10 +75,23 @@ function todoLines(view: ProjectView): string {
   return [header, ...next].join('  \n');
 }
 
-/** Commands get the project the same way as from the sidebar: as `{ project }`. */
+function missingLine(view: ProjectView): string {
+  if (!view.isMissing) {
+    return '';
+  }
+  const warning = escape(vscode.l10n.t('This folder was not found on this computer.'));
+  const locate = commandLink('search', vscode.l10n.t('Locate Folder...'), LOCATE_FOLDER_COMMAND, view);
+  return `$(warning) **${warning}** &nbsp; ${locate}`;
+}
+
 function actionLinks(view: ProjectView): string {
+  return ACTIONS.map((action) => commandLink(action.icon, action.label, action.command, view)).join(' &nbsp;·&nbsp; ');
+}
+
+/** Commands get the project the same way as from the sidebar: as `{ project }`. */
+function commandLink(icon: string, label: string, command: string, view: ProjectView): string {
   const argument = encodeURIComponent(JSON.stringify([{ project: view.project }]));
-  return ACTIONS.map((action) => `[$(${action.icon}) ${escape(action.label)}](command:${action.command}?${argument})`).join(' &nbsp;·&nbsp; ');
+  return `[$(${icon}) ${escape(label)}](command:${command}?${argument})`;
 }
 
 /** Hovers only allow inline color and background-color styles, which is exactly what chips need. */

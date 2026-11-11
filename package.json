@@ -59,6 +59,7 @@
       { "command": "projectsHub.saveCurrentProject", "title": "Save Current Project", "category": "Projects Hub", "icon": "$(save)" },
       { "command": "projectsHub.addProjectFolder", "title": "Add Project Folder...", "category": "Projects Hub", "icon": "$(add)" },
       { "command": "projectsHub.openProject", "title": "Open Project", "category": "Projects Hub" },
+      { "command": "projectsHub.locateFolder", "title": "Locate Folder on This Computer...", "category": "Projects Hub", "icon": "$(search)" },
       { "command": "projectsHub.openProjectInNewWindow", "title": "Open in New Window", "category": "Projects Hub", "icon": "$(empty-window)" },
       { "command": "projectsHub.renameProject", "title": "Rename Project", "category": "Projects Hub" },
       { "command": "projectsHub.removeProject", "title": "Remove Project", "category": "Projects Hub", "icon": "$(trash)" },
@@ -96,9 +97,9 @@
         { "command": "projectsHub.openBoard", "when": "view == projectsHub.projects", "group": "navigation@0" },
         { "command": "projectsHub.quickSwitch", "when": "view == projectsHub.projects", "group": "navigation@1" },
         { "command": "projectsHub.saveCurrentProject", "when": "view == projectsHub.projects", "group": "navigation@2" },
-        { "command": "projectsHub.createGroup", "when": "view == projectsHub.projects", "group": "navigation@3" },
-        { "command": "projectsHub.switchLayout", "when": "view == projectsHub.projects", "group": "navigation@4" },
-        { "command": "projectsHub.addProjectFolder", "when": "view == projectsHub.projects", "group": "more@1" },
+        { "command": "projectsHub.addProjectFolder", "when": "view == projectsHub.projects", "group": "navigation@3" },
+        { "command": "projectsHub.createGroup", "when": "view == projectsHub.projects", "group": "navigation@4" },
+        { "command": "projectsHub.switchLayout", "when": "view == projectsHub.projects", "group": "navigation@5" },
         { "command": "projectsHub.createTag", "when": "view == projectsHub.projects", "group": "more@2" },
         { "command": "projectsHub.manageTags", "when": "view == projectsHub.projects", "group": "more@3" },
         { "command": "projectsHub.manageStatuses", "when": "view == projectsHub.projects", "group": "more@4" }
@@ -106,6 +107,8 @@
       "view/item/context": [
         { "command": "projectsHub.openProjectInNewWindow", "when": "viewItem =~ /^project/", "group": "inline@1" },
         { "command": "projectsHub.togglePin", "when": "viewItem =~ /^project/", "group": "inline@2" },
+        { "command": "projectsHub.locateFolder", "when": "viewItem == projectMissing", "group": "inline@0" },
+        { "command": "projectsHub.locateFolder", "when": "viewItem == projectMissing", "group": "1_open@0" },
         { "command": "projectsHub.openProjectInNewWindow", "when": "viewItem =~ /^project/", "group": "1_open@1" },
         { "command": "projectsHub.setStatus", "when": "viewItem =~ /^project/", "group": "2_organize@1" },
         { "command": "projectsHub.assignGroup", "when": "viewItem =~ /^project/", "group": "2_organize@2" },
@@ -125,6 +128,7 @@
       ],
       "commandPalette": [
         { "command": "projectsHub.openProject", "when": "false" },
+        { "command": "projectsHub.locateFolder", "when": "false" },
         { "command": "projectsHub.openProjectInNewWindow", "when": "false" },
         { "command": "projectsHub.renameProject", "when": "false" },
         { "command": "projectsHub.removeProject", "when": "false" },

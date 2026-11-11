@@ -20,8 +20,8 @@ The code is organized **per feature**, not per technical type.
 | Folder | Responsibility |
 |---|---|
 | `src/extension.ts` | Entry point and composition root: creates every part once and wires them together. |
-| `storage/` | The saved model (`OrganizerState`), the `StateStore` abstraction and `GlobalStateStore` (VS Code global state + Settings Sync). |
-| `projects/` | Saving and opening projects, notes, assigning status, group and tags. |
+| `storage/` | The saved model (`OrganizerState`), the `StateStore` abstraction, `GlobalStateStore` (VS Code global state + Settings Sync) and `MachinePathStore` (folder locations per computer, never synced). |
+| `projects/` | Saving and opening projects, locating a missing folder (`FolderLocator`), notes, assigning status, group and tags. |
 | `statuses/` | Built-in and custom statuses, `StatusResolver` (automatic or manual), status picker and management. |
 | `todos/` | To-dos per project: service, progress (pure), the to-do picker and commands. |
 | `notes/` | Markdown notes: a virtual file system (`projectshub-note:`) so a note opens and saves like a normal file; `noteSummary` (pure). |
@@ -87,6 +87,15 @@ flowchart TD
 ## Data model
 
 Everything is saved as one `OrganizerState` object under the key `projectsHub.state`. That key is registered for Settings Sync.
+
+Folder locations that differ per computer are kept under `projectsHub.machinePaths` (project id → path), which is **not** synced. `MachinePathStore` wraps `GlobalStateStore`: reading puts this computer's path on each project, writing puts the saved path back, so the rest of the extension only ever sees the right folder.
+
+```mermaid
+flowchart LR
+    services["Services<br/>(projects, tags, …)"] -->|read / write| machine["MachinePathStore"]
+    machine -->|saved paths| synced[("projectsHub.state<br/>synced")]
+    machine -->|this computer's paths| local[("projectsHub.machinePaths<br/>this computer only")]
+```
 
 ```mermaid
 classDiagram

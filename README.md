@@ -160,10 +160,13 @@ All commands are in the Command Palette (`Ctrl+Shift+P`) under **Projects Hub**,
 No. Removing a project, group or tag only removes it from Projects Hub. Nothing on disk is touched.
 
 **Where is my data stored?**
-In VS Code's own storage. With Settings Sync turned on, it follows you to your other machines.
+In VS Code's own storage. With Settings Sync turned on (including **Extensions**), it follows you to your other machines.
+
+**My projects are in a different folder on my other computer.**
+Right-click the project (it shows ⚠) → **Locate Folder on This Computer…**, or use the link in its tooltip. That folder is remembered for this computer only; your other computers keep their own.
 
 **A project shows ⚠ and "folder not found".**
-The folder was moved or deleted. Opening it offers to remove it from your list.
+The folder was moved, deleted, or lives elsewhere on this computer. Opening it offers **Locate Folder…** or **Remove Project**.
 
 **Can I use it next to Project Manager?**
 Yes. The two extensions do not share data or commands.

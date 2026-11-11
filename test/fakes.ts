@@ -1,9 +1,11 @@
 import { IdGenerator } from '../src/shared/IdGenerator';
 import { createEmptyState, OrganizerState } from '../src/storage/OrganizerState';
+import { LocalMemento } from '../src/storage/MachinePaths';
 import { StateStore } from '../src/storage/StateStore';
 
 export class InMemoryStateStore implements StateStore {
   private state: OrganizerState = createEmptyState();
+  private readonly listeners = new Set<() => unknown>();
 
   read(): OrganizerState {
     return structuredClone(this.state);
@@ -11,6 +13,24 @@ export class InMemoryStateStore implements StateStore {
 
   async write(state: OrganizerState): Promise<void> {
     this.state = structuredClone(state);
+    this.listeners.forEach((listener) => listener());
+  }
+
+  onDidChange(listener: () => unknown): { dispose(): void } {
+    this.listeners.add(listener);
+    return { dispose: () => this.listeners.delete(listener) };
+  }
+}
+
+export class InMemoryMemento implements LocalMemento {
+  private readonly values = new Map<string, unknown>();
+
+  get<T>(key: string): T | undefined {
+    return structuredClone(this.values.get(key)) as T | undefined;
+  }
+
+  async update(key: string, value: unknown): Promise<void> {
+    this.values.set(key, structuredClone(value));
   }
 }
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Locate Folder on This Computer…: point a project to where its folder is on this machine. Each computer keeps its own location, so Settings Sync no longer breaks projects saved on another computer.
+- Add Project Folder… is now a button in the sidebar title bar.
+
 ## 0.3.0
 
 - To-dos per project: tick off, add, edit and delete in one list; progress and next steps on cards, books and tooltips.
