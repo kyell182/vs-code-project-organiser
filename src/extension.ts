@@ -1,6 +1,12 @@
 import { randomUUID } from 'crypto';
 import * as fs from 'fs';
 import * as vscode from 'vscode';
+import { FileSystemInspector } from './board/FileSystemInspector';
+import { configureColorIconFolder } from './colors/ColorIconFiles';
+import { ColorPicker } from './colors/ColorPicker';
+import { CustomColorPanel } from './colors/CustomColorPanel';
+import { RecentColors } from './colors/RecentColors';
+import { ProjectBoardPanel } from './board/ProjectBoardPanel';
 import { GroupCommands } from './groups/GroupCommands';
 import { GroupPicker } from './groups/GroupPicker';
 import { GroupService } from './groups/GroupService';
@@ -8,7 +14,7 @@ import { ProjectCommands } from './projects/ProjectCommands';
 import { ProjectOpener } from './projects/ProjectOpener';
 import { ProjectOrganizeCommands } from './projects/ProjectOrganizeCommands';
 import { ProjectService } from './projects/ProjectService';
-import { StatusResolver } from './projects/StatusResolver';
+import { registerSafeCommand } from './shared/registerSafeCommand';
 import { Settings } from './shared/Settings';
 import { GroupDragAndDrop } from './sidebar/GroupDragAndDrop';
 import { GroupLayout } from './sidebar/layouts/GroupLayout';
@@ -18,60 +24,117 @@ import { LayoutSwitcher } from './sidebar/LayoutSwitcher';
 import { ProjectDecorations } from './sidebar/ProjectDecorations';
 import { ProjectTreeProvider, TreeNode } from './sidebar/ProjectTreeProvider';
 import { ProjectViewFactory } from './sidebar/ProjectViewFactory';
+import { StatusCommands } from './statuses/StatusCommands';
+import { StatusPicker } from './statuses/StatusPicker';
+import { StatusResolver } from './statuses/StatusResolver';
+import { StatusService } from './statuses/StatusService';
 import { GlobalStateStore } from './storage/GlobalStateStore';
 import { CurrentProjectStatusBar } from './switcher/CurrentProjectStatusBar';
 import { QuickSwitcher } from './switcher/QuickSwitcher';
+import { TagCommands } from './tags/TagCommands';
 import { TagPicker } from './tags/TagPicker';
 import { TagService } from './tags/TagService';
-import { TagCommands } from './tags/TagCommands';
 
 const VIEW_ID = 'projectOrganizer.projects';
 
+interface Core {
+  settings: Settings;
+  store: GlobalStateStore;
+  projects: ProjectService;
+  groups: GroupService;
+  tags: TagService;
+  statuses: StatusService;
+  resolver: StatusResolver;
+  opener: ProjectOpener;
+  colors: ColorPicker;
+  currentPath: () => string | undefined;
+}
+
 /** Composition root: builds every part once and wires them together. */
 export function activate(context: vscode.ExtensionContext): void {
+  const core = createCore(context);
+  const tree = createSidebar(context, core);
+  const board = createBoard(context, core);
+  const statusBar = new CurrentProjectStatusBar(core.projects, core.store, core.resolver, core.currentPath);
+  const refreshAll = () => {
+    tree.refresh();
+    board.refresh();
+    statusBar.update();
+  };
+  context.subscriptions.push(
+    statusBar,
+    ...registerCommands(core),
+    core.store.onDidChange(refreshAll),
+    // Global state is not pushed between windows, so re-read it whenever this window gets focus.
+    vscode.window.onDidChangeWindowState((state) => state.focused && refreshAll()),
+    vscode.workspace.onDidChangeConfiguration((event) => core.settings.affectsStatus(event) && refreshAll()),
+  );
+  recordCurrentProjectOpened(core.projects, core.currentPath());
+}
+
+function createCore(context: vscode.ExtensionContext): Core {
   const settings = new Settings();
   const store = new GlobalStateStore(context.globalState);
   const ids = { next: () => randomUUID() };
   const projects = new ProjectService(store, ids);
-  const groups = new GroupService(store, ids);
-  const tags = new TagService(store, ids);
-  const resolver = new StatusResolver(() => settings.inactiveAfterDays());
-  const opener = new ProjectOpener(projects, settings);
-  const currentPath = () => vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+  const recentColors = new RecentColors(context.globalState);
+  configureColorIconFolder(vscode.Uri.joinPath(context.extensionUri, 'media', 'color-icons'));
+  context.subscriptions.push(store);
+  return {
+    settings,
+    store,
+    projects,
+    groups: new GroupService(store, ids),
+    tags: new TagService(store, ids),
+    statuses: new StatusService(store, ids),
+    resolver: new StatusResolver(() => settings.inactiveAfterDays()),
+    opener: new ProjectOpener(projects, settings),
+    colors: new ColorPicker(new CustomColorPanel(context.extensionUri, recentColors), recentColors),
+    currentPath: () => vscode.workspace.workspaceFolders?.[0]?.uri.fsPath,
+  };
+}
 
-  const layoutSwitcher = new LayoutSwitcher([new GroupLayout(), new TagLayout(), new StatusLayout(resolver)], context.globalState);
-  const views = new ProjectViewFactory(resolver, { currentPath, folderExists: (path) => fs.existsSync(path) });
-  const tree = new ProjectTreeProvider(store, views, layoutSwitcher.initialLayout());
+function createSidebar(context: vscode.ExtensionContext, core: Core): ProjectTreeProvider {
+  const layoutSwitcher = new LayoutSwitcher([new GroupLayout(), new TagLayout(), new StatusLayout(core.resolver)], context.globalState);
+  const views = new ProjectViewFactory(core.resolver, { currentPath: core.currentPath, folderExists: (path) => fs.existsSync(path) });
+  const tree = new ProjectTreeProvider(core.store, views, layoutSwitcher.initialLayout());
   const treeView = vscode.window.createTreeView<TreeNode>(VIEW_ID, {
     treeDataProvider: tree,
-    dragAndDropController: new GroupDragAndDrop(projects),
+    dragAndDropController: new GroupDragAndDrop(core.projects),
     canSelectMany: true,
     showCollapseAll: true,
   });
-  const statusBar = new CurrentProjectStatusBar(projects, resolver, currentPath);
-  const refreshAll = () => {
-    tree.refresh();
-    statusBar.update();
-  };
-
   context.subscriptions.push(
-    store,
     treeView,
-    statusBar,
     vscode.window.registerFileDecorationProvider(new ProjectDecorations()),
     layoutSwitcher.register(tree, treeView),
-    new QuickSwitcher(store, resolver, opener).register(),
-    ...new ProjectCommands(projects, opener).register(),
-    ...new ProjectOrganizeCommands(projects, new GroupPicker(groups), new TagPicker(tags)).register(),
-    ...new GroupCommands(groups, new GroupPicker(groups)).register(),
-    ...new TagCommands(tags).register(),
-    store.onDidChange(refreshAll),
-    // Global state is not pushed between windows, so re-read it whenever this window gets focus.
-    vscode.window.onDidChangeWindowState((state) => state.focused && refreshAll()),
-    vscode.workspace.onDidChangeConfiguration((event) => settings.affectsStatus(event) && refreshAll()),
   );
+  return tree;
+}
 
-  recordCurrentProjectOpened(projects, currentPath());
+function createBoard(context: vscode.ExtensionContext, core: Core): ProjectBoardPanel {
+  const inspector = new FileSystemInspector();
+  const board = new ProjectBoardPanel(context.extensionUri, {
+    store: core.store,
+    projects: core.projects,
+    opener: core.opener,
+    context: () => ({ resolver: core.resolver, inspector, currentPath: core.currentPath() }),
+  });
+  context.subscriptions.push(registerSafeCommand('projectOrganizer.openBoard', async () => board.show()));
+  return board;
+}
+
+function registerCommands(core: Core): vscode.Disposable[] {
+  const groupPicker = new GroupPicker(core.groups, core.colors);
+  const pickers = { status: new StatusPicker(core.store), group: groupPicker, tag: new TagPicker(core.tags, core.colors) };
+  return [
+    new QuickSwitcher(core.store, core.resolver, core.opener).register(),
+    ...new ProjectCommands(core.projects, core.opener).register(),
+    ...new ProjectOrganizeCommands(core.projects, pickers).register(),
+    ...new GroupCommands(core.groups, groupPicker, core.colors).register(),
+    ...new TagCommands(core.tags, core.colors).register(),
+    ...new StatusCommands(core.statuses, core.colors).register(),
+  ];
 }
 
 function recordCurrentProjectOpened(projects: ProjectService, path: string | undefined): void {

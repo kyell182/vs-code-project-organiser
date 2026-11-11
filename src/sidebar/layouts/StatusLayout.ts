@@ -1,8 +1,8 @@
-import { ALL_STATUSES } from '../../projects/ProjectStatus';
-import { StatusResolver } from '../../projects/StatusResolver';
+import { listStatuses } from '../../statuses/StatusCatalog';
+import { StatusResolver } from '../../statuses/StatusResolver';
 import { OrganizerState } from '../../storage/OrganizerState';
 import { Layout, LayoutId } from './Layout';
-import { Section, SectionKind } from './Section';
+import { SectionKind } from './Section';
 import { nonEmpty, pinnedSections, sortByName } from './sectionHelpers';
 
 export class StatusLayout implements Layout {
@@ -11,14 +11,16 @@ export class StatusLayout implements Layout {
 
   constructor(private readonly resolver: StatusResolver) {}
 
-  build(state: OrganizerState, now: number): Section[] {
-    const statusSections = ALL_STATUSES.flatMap((status) =>
+  build(state: OrganizerState, now: number) {
+    const statusSections = listStatuses(state).flatMap((status) =>
       nonEmpty({
         kind: SectionKind.Status,
-        id: status,
-        status,
-        label: status,
-        projects: sortByName(state.projects.filter((project) => this.resolver.resolve(project, now) === status)),
+        id: status.id,
+        label: status.name,
+        isBuiltInLabel: status.isBuiltIn,
+        icon: status.icon,
+        color: status.color,
+        projects: sortByName(state.projects.filter((project) => this.resolver.resolve(project, state, now).id === status.id)),
       }),
     );
     return [...pinnedSections(state.projects), ...statusSections];

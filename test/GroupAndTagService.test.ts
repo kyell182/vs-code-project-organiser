@@ -3,7 +3,7 @@ import { GroupService } from '../src/groups/GroupService';
 import { ProjectService } from '../src/projects/ProjectService';
 import { DomainError } from '../src/shared/DomainError';
 import { TagService } from '../src/tags/TagService';
-import { TagColor } from '../src/tags/TagColor';
+import { PaletteColor } from '../src/colors/PaletteColor';
 import { InMemoryStateStore, SequentialIds } from './fakes';
 
 describe('GroupService and TagService', () => {
@@ -40,16 +40,16 @@ describe('GroupService and TagService', () => {
   });
 
   it('recolors and renames a tag', async () => {
-    const tag = await tags.create('web', TagColor.Blue);
-    await tags.recolor(tag.id, TagColor.Red);
+    const tag = await tags.create('web', PaletteColor.Blue);
+    await tags.recolor(tag.id, PaletteColor.Red);
     await tags.rename(tag.id, 'frontend');
-    assert.deepStrictEqual(tags.list()[0], { id: tag.id, name: 'frontend', color: TagColor.Red });
+    assert.deepStrictEqual(tags.list()[0], { id: tag.id, name: 'frontend', color: PaletteColor.Red });
   });
 
   it('removes a deleted tag from every project', async () => {
     const project = await projects.add('A', 'D:\\a');
-    const web = await tags.create('web', TagColor.Blue);
-    const school = await tags.create('school', TagColor.Green);
+    const web = await tags.create('web', PaletteColor.Blue);
+    const school = await tags.create('school', PaletteColor.Green);
     await projects.setTags(project.id, [web.id, school.id]);
     await tags.delete(web.id);
     assert.deepStrictEqual(projects.list()[0].tagIds, [school.id]);

@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
+import { colorDot } from '../colors/colorEmoji';
 import { ProjectOpener } from '../projects/ProjectOpener';
-import { statusIcon, statusLabel } from '../projects/StatusAppearance';
-import { StatusResolver } from '../projects/StatusResolver';
+import { statusIcon, statusLabel } from '../statuses/StatusAppearance';
+import { StatusResolver } from '../statuses/StatusResolver';
 import { registerSafeCommand } from '../shared/registerSafeCommand';
 import { OrganizerState, ProjectRecord } from '../storage/OrganizerState';
 import { StateStore } from '../storage/StateStore';
@@ -39,15 +40,15 @@ export class QuickSwitcher {
   }
 
   private toItem(project: ProjectRecord, state: OrganizerState, now: number): ProjectPickItem {
-    const status = this.resolver.resolve(project, now);
-    const tags = state.tags.filter((tag) => project.tagIds.includes(tag.id)).map((tag) => `#${tag.name}`);
+    const status = this.resolver.resolve(project, state, now);
+    const tags = state.tags.filter((tag) => project.tagIds.includes(tag.id)).map((tag) => `${colorDot(tag.color)} #${tag.name}`);
     const group = state.groups.find((candidate) => candidate.id === project.groupId)?.name;
     return {
       label: project.name,
       project,
       iconPath: statusIcon(status),
       description: [group, statusLabel(status), ...tags].filter(Boolean).join('  ·  '),
-      detail: project.path,
+      detail: project.note ? `✎ ${project.note}  —  ${project.path}` : project.path,
     };
   }
 }

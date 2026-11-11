@@ -14,12 +14,16 @@ export class TagLayout implements Layout {
       kind: SectionKind.Tag,
       id: tag.id,
       label: tag.name,
-      tagColor: tag.color,
+      isBuiltInLabel: false,
+      icon: 'tag',
+      color: tag.color,
       projects: sortByName(state.projects.filter((project) => project.tagIds.includes(tag.id))),
     }));
     const untagged: Section = {
       kind: SectionKind.Untagged,
       label: 'Untagged',
+      isBuiltInLabel: true,
+      icon: 'circle-slash',
       projects: sortByName(state.projects.filter((project) => project.tagIds.length === 0)),
     };
     return [...pinnedSections(state.projects), ...tagSections, ...nonEmpty(untagged)];

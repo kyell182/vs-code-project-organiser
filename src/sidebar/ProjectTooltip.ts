@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { ProjectView } from './ProjectView';
-import { statusLabel } from '../projects/StatusAppearance';
+import { statusLabel } from '../statuses/StatusAppearance';
 
 export function buildProjectTooltip(view: ProjectView): vscode.MarkdownString {
   const lines = [
@@ -12,6 +12,9 @@ export function buildProjectTooltip(view: ProjectView): vscode.MarkdownString {
     `**${vscode.l10n.t('Tags')}:** ${view.tags.length > 0 ? view.tags.map((tag) => `\`#${inCode(tag.name)}\``).join(' ') : vscode.l10n.t('none')}`,
     `**${vscode.l10n.t('Last opened')}:** ${formatLastOpened(view.project.lastOpened)}`,
   ];
+  if (view.project.note) {
+    lines.push(`$(note) _${escape(view.project.note)}_`);
+  }
   if (view.isMissing) {
     lines.push('', `$(warning) **${vscode.l10n.t('This folder no longer exists.')}**`);
   }

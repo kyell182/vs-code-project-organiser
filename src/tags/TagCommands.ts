@@ -2,11 +2,14 @@ import * as vscode from 'vscode';
 import { DomainError } from '../shared/DomainError';
 import { registerSafeCommand } from '../shared/registerSafeCommand';
 import { SectionTarget } from '../shared/TreeTargets';
-import { pickTagColor } from './TagColorPicker';
+import { ColorPicker } from '../colors/ColorPicker';
 import { TagService } from './TagService';
 
 export class TagCommands {
-  constructor(private readonly tags: TagService) {}
+  constructor(
+    private readonly tags: TagService,
+    private readonly colors: ColorPicker,
+  ) {}
 
   register(): vscode.Disposable[] {
     return [
@@ -22,7 +25,7 @@ export class TagCommands {
     if (name === undefined) {
       return;
     }
-    const color = await pickTagColor(name);
+    const color = await this.colors.pick(name);
     if (color) {
       await this.tags.create(name, color);
     }
@@ -36,7 +39,7 @@ export class TagCommands {
   }
 
   private async recolor(target: SectionTarget): Promise<void> {
-    const color = await pickTagColor(target.targetName);
+    const color = await this.colors.pick(target.targetName);
     if (color) {
       await this.tags.recolor(requireId(target), color);
     }

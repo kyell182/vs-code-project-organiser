@@ -2,9 +2,13 @@
   "name": "project-organizer",
   "displayName": "Project Organizer",
   "description": "Save projects, organize them in groups, label them with colored tags and see their status at a glance. Open any project with one click.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "publisher": "your-publisher-id",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kyell182/vs-code-project-organiser.git"
+  },
   "engines": {
     "vscode": "^1.90.0"
   },
@@ -57,14 +61,18 @@
       { "command": "projectOrganizer.setStatus", "title": "Set Status...", "category": "Project Organizer" },
       { "command": "projectOrganizer.assignGroup", "title": "Move to Group...", "category": "Project Organizer" },
       { "command": "projectOrganizer.editTags", "title": "Edit Tags...", "category": "Project Organizer", "icon": "$(tag)" },
+      { "command": "projectOrganizer.editNote", "title": "Edit Note...", "category": "Project Organizer", "icon": "$(note)" },
       { "command": "projectOrganizer.createGroup", "title": "Create Group", "category": "Project Organizer", "icon": "$(new-folder)" },
       { "command": "projectOrganizer.renameGroup", "title": "Rename Group", "category": "Project Organizer" },
+      { "command": "projectOrganizer.recolorGroup", "title": "Change Group Color", "category": "Project Organizer" },
       { "command": "projectOrganizer.deleteGroup", "title": "Delete Group", "category": "Project Organizer", "icon": "$(trash)" },
       { "command": "projectOrganizer.createTag", "title": "Create Tag", "category": "Project Organizer" },
       { "command": "projectOrganizer.renameTag", "title": "Rename Tag", "category": "Project Organizer" },
       { "command": "projectOrganizer.recolorTag", "title": "Change Tag Color", "category": "Project Organizer" },
       { "command": "projectOrganizer.deleteTag", "title": "Delete Tag", "category": "Project Organizer", "icon": "$(trash)" },
       { "command": "projectOrganizer.switchLayout", "title": "Switch View (Group / Tag / Status)", "category": "Project Organizer", "icon": "$(list-tree)" },
+      { "command": "projectOrganizer.manageStatuses", "title": "Manage Custom Statuses...", "category": "Project Organizer", "icon": "$(symbol-color)" },
+      { "command": "projectOrganizer.openBoard", "title": "Open Project Board", "category": "Project Organizer", "icon": "$(layout)" },
       { "command": "projectOrganizer.quickSwitch", "title": "Quick Switch Project", "category": "Project Organizer", "icon": "$(search)" }
     ],
     "keybindings": [
@@ -76,12 +84,14 @@
     ],
     "menus": {
       "view/title": [
+        { "command": "projectOrganizer.openBoard", "when": "view == projectOrganizer.projects", "group": "navigation@0" },
         { "command": "projectOrganizer.quickSwitch", "when": "view == projectOrganizer.projects", "group": "navigation@1" },
         { "command": "projectOrganizer.saveCurrentProject", "when": "view == projectOrganizer.projects", "group": "navigation@2" },
         { "command": "projectOrganizer.createGroup", "when": "view == projectOrganizer.projects", "group": "navigation@3" },
         { "command": "projectOrganizer.switchLayout", "when": "view == projectOrganizer.projects", "group": "navigation@4" },
         { "command": "projectOrganizer.addProjectFolder", "when": "view == projectOrganizer.projects", "group": "more@1" },
-        { "command": "projectOrganizer.createTag", "when": "view == projectOrganizer.projects", "group": "more@2" }
+        { "command": "projectOrganizer.createTag", "when": "view == projectOrganizer.projects", "group": "more@2" },
+        { "command": "projectOrganizer.manageStatuses", "when": "view == projectOrganizer.projects", "group": "more@3" }
       ],
       "view/item/context": [
         { "command": "projectOrganizer.openProjectInNewWindow", "when": "viewItem =~ /^project/", "group": "inline@1" },
@@ -90,11 +100,13 @@
         { "command": "projectOrganizer.setStatus", "when": "viewItem =~ /^project/", "group": "2_organize@1" },
         { "command": "projectOrganizer.assignGroup", "when": "viewItem =~ /^project/", "group": "2_organize@2" },
         { "command": "projectOrganizer.editTags", "when": "viewItem =~ /^project/", "group": "2_organize@3" },
-        { "command": "projectOrganizer.togglePin", "when": "viewItem =~ /^project/", "group": "2_organize@4" },
+        { "command": "projectOrganizer.editNote", "when": "viewItem =~ /^project/", "group": "2_organize@4" },
+        { "command": "projectOrganizer.togglePin", "when": "viewItem =~ /^project/", "group": "2_organize@5" },
         { "command": "projectOrganizer.renameProject", "when": "viewItem =~ /^project/", "group": "3_edit@1" },
         { "command": "projectOrganizer.removeProject", "when": "viewItem =~ /^project/", "group": "3_edit@2" },
         { "command": "projectOrganizer.renameGroup", "when": "viewItem == group", "group": "1_edit@1" },
-        { "command": "projectOrganizer.deleteGroup", "when": "viewItem == group", "group": "1_edit@2" },
+        { "command": "projectOrganizer.recolorGroup", "when": "viewItem == group", "group": "1_edit@2" },
+        { "command": "projectOrganizer.deleteGroup", "when": "viewItem == group", "group": "1_edit@3" },
         { "command": "projectOrganizer.renameTag", "when": "viewItem == tag", "group": "1_edit@1" },
         { "command": "projectOrganizer.recolorTag", "when": "viewItem == tag", "group": "1_edit@2" },
         { "command": "projectOrganizer.deleteTag", "when": "viewItem == tag", "group": "1_edit@3" }
@@ -108,6 +120,8 @@
         { "command": "projectOrganizer.setStatus", "when": "false" },
         { "command": "projectOrganizer.assignGroup", "when": "false" },
         { "command": "projectOrganizer.editTags", "when": "false" },
+        { "command": "projectOrganizer.editNote", "when": "false" },
+        { "command": "projectOrganizer.recolorGroup", "when": "false" },
         { "command": "projectOrganizer.renameGroup", "when": "false" },
         { "command": "projectOrganizer.deleteGroup", "when": "false" },
         { "command": "projectOrganizer.renameTag", "when": "false" },

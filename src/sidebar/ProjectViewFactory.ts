@@ -1,4 +1,4 @@
-import { StatusResolver } from '../projects/StatusResolver';
+import { StatusResolver } from '../statuses/StatusResolver';
 import { isSamePath } from '../shared/isSamePath';
 import { OrganizerState, ProjectRecord } from '../storage/OrganizerState';
 import { ProjectView } from './ProjectView';
@@ -18,7 +18,7 @@ export class ProjectViewFactory {
     const currentPath = this.environment.currentPath();
     return {
       project,
-      status: this.resolver.resolve(project, now),
+      status: this.resolver.resolve(project, state, now),
       tags: state.tags.filter((tag) => project.tagIds.includes(tag.id)),
       groupName: state.groups.find((group) => group.id === project.groupId)?.name,
       isCurrent: currentPath !== undefined && isSamePath(currentPath, project.path),

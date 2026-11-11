@@ -1,10 +1,10 @@
-import { ProjectStatus } from '../projects/ProjectStatus';
+import { StatusDefinition } from '../statuses/StatusDefinition';
 import { ProjectRecord, TagRecord } from '../storage/OrganizerState';
 
 /** Everything the sidebar needs to draw one project, resolved once per refresh. */
 export interface ProjectView {
   project: ProjectRecord;
-  status: ProjectStatus;
+  status: StatusDefinition;
   tags: TagRecord[];
   groupName?: string;
   isCurrent: boolean;

@@ -1,5 +1,7 @@
-import { ProjectStatus } from '../projects/ProjectStatus';
-import { TagColor } from '../tags/TagColor';
+import { Color } from '../colors/Color';
+
+/** Id of a built-in status (see BuiltInStatus) or of a custom status. */
+export type StatusId = string;
 
 export interface ProjectRecord {
   id: string;
@@ -7,28 +9,39 @@ export interface ProjectRecord {
   path: string;
   groupId?: string;
   tagIds: string[];
-  manualStatus?: ProjectStatus;
+  manualStatus?: StatusId;
   lastOpened?: number;
   isPinned: boolean;
+  note?: string;
 }
 
 export interface GroupRecord {
   id: string;
   name: string;
+  /** Optional because groups saved by v0.1 have no color yet. */
+  color?: Color;
 }
 
 export interface TagRecord {
   id: string;
   name: string;
-  color: TagColor;
+  color: Color;
+}
+
+/** A status the user made in addition to the built-in ones. */
+export interface CustomStatusRecord {
+  id: StatusId;
+  name: string;
+  color: Color;
 }
 
 export interface OrganizerState {
   projects: ProjectRecord[];
   groups: GroupRecord[];
   tags: TagRecord[];
+  statuses: CustomStatusRecord[];
 }
 
 export function createEmptyState(): OrganizerState {
-  return { projects: [], groups: [], tags: [] };
+  return { projects: [], groups: [], tags: [], statuses: [] };
 }

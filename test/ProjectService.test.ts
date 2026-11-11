@@ -1,10 +1,10 @@
 import * as assert from 'assert';
 import { GroupService } from '../src/groups/GroupService';
 import { ProjectService } from '../src/projects/ProjectService';
-import { ProjectStatus } from '../src/projects/ProjectStatus';
+import { BuiltInStatus } from '../src/statuses/BuiltInStatus';
 import { DomainError } from '../src/shared/DomainError';
 import { TagService } from '../src/tags/TagService';
-import { TagColor } from '../src/tags/TagColor';
+import { PaletteColor } from '../src/colors/PaletteColor';
 import { InMemoryStateStore, SequentialIds } from './fakes';
 
 describe('ProjectService', () => {
@@ -50,7 +50,7 @@ describe('ProjectService', () => {
 
   it('sets tags without duplicates', async () => {
     const project = await projects.add('A', 'D:\\a');
-    const tag = await tags.create('web', TagColor.Blue);
+    const tag = await tags.create('web', PaletteColor.Blue);
     await projects.setTags(project.id, [tag.id, tag.id]);
     assert.deepStrictEqual(projects.list()[0].tagIds, [tag.id]);
   });
@@ -58,10 +58,10 @@ describe('ProjectService', () => {
   it('toggles pin and sets a manual status', async () => {
     const project = await projects.add('A', 'D:\\a');
     await projects.togglePin(project.id);
-    await projects.setStatus(project.id, ProjectStatus.Paused);
+    await projects.setStatus(project.id, BuiltInStatus.Paused);
     const saved = projects.list()[0];
     assert.strictEqual(saved.isPinned, true);
-    assert.strictEqual(saved.manualStatus, ProjectStatus.Paused);
+    assert.strictEqual(saved.manualStatus, BuiltInStatus.Paused);
   });
 
   it('records when a saved project was opened and ignores unknown folders', async () => {
@@ -69,6 +69,19 @@ describe('ProjectService', () => {
     await projects.markOpened('D:/a', 1000);
     await projects.markOpened('D:\\unknown', 2000);
     assert.strictEqual(projects.list()[0].lastOpened, 1000);
+  });
+
+  it('refuses a status that does not exist', async () => {
+    const project = await projects.add('A', 'D:\a');
+    await assert.rejects(projects.setStatus(project.id, 'nope'), DomainError);
+  });
+
+  it('saves a trimmed note and removes an empty one', async () => {
+    const project = await projects.add('A', 'D:\a');
+    await projects.setNote(project.id, '  next: login page ');
+    assert.strictEqual(projects.list()[0].note, 'next: login page');
+    await projects.setNote(project.id, '   ');
+    assert.strictEqual(projects.list()[0].note, undefined);
   });
 
   it('removes a project', async () => {

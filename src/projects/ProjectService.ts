@@ -2,10 +2,10 @@ import { DomainError } from '../shared/DomainError';
 import { IdGenerator } from '../shared/IdGenerator';
 import { requireById, requireName } from '../shared/NameValidation';
 import { isSamePath } from '../shared/isSamePath';
-import { OrganizerState, ProjectRecord } from '../storage/OrganizerState';
+import { listStatuses } from '../statuses/StatusCatalog';
+import { OrganizerState, ProjectRecord, StatusId } from '../storage/OrganizerState';
 import { StateStore } from '../storage/StateStore';
 import { mutateState } from '../storage/mutateState';
-import { ProjectStatus } from './ProjectStatus';
 
 const KIND = 'Project';
 
@@ -49,8 +49,19 @@ export class ProjectService {
   }
 
   /** Passing undefined hands the status back to the automatic resolver. */
-  setStatus(id: string, status: ProjectStatus | undefined): Promise<void> {
-    return this.update(id, (project) => (project.manualStatus = status));
+  setStatus(id: string, statusId: StatusId | undefined): Promise<void> {
+    return this.mutate((state) => {
+      if (statusId !== undefined) {
+        requireById(listStatuses(state), statusId, 'Status');
+      }
+      requireById(state.projects, id, KIND).manualStatus = statusId;
+    });
+  }
+
+  /** A short reminder such as "next: login page"; an empty note removes it. */
+  setNote(id: string, note: string): Promise<void> {
+    const trimmed = note.trim();
+    return this.update(id, (project) => (project.note = trimmed.length > 0 ? trimmed : undefined));
   }
 
   assignGroup(id: string, groupId: string | undefined): Promise<void> {

@@ -1,0 +1,75 @@
+import { DEFAULT_GROUP_COLOR } from '../groups/GroupService';
+import { isSamePath } from '../shared/isSamePath';
+import { Color } from '../colors/Color';
+import { listStatuses } from '../statuses/StatusCatalog';
+import { StatusResolver } from '../statuses/StatusResolver';
+import { OrganizerState, ProjectRecord } from '../storage/OrganizerState';
+import { FolderFacts, FolderInspector } from './FolderFacts';
+
+export interface BoardChip {
+  name: string;
+  color: Color;
+}
+
+export interface BoardCard extends FolderFacts {
+  id: string;
+  name: string;
+  path: string;
+  note?: string;
+  group?: BoardChip;
+  tags: BoardChip[];
+  lastOpened?: number;
+  isPinned: boolean;
+  isCurrent: boolean;
+}
+
+export interface BoardColumn {
+  statusId: string;
+  label: string;
+  isBuiltInLabel: boolean;
+  color: Color;
+  cards: BoardCard[];
+}
+
+export interface BoardContext {
+  resolver: StatusResolver;
+  inspector: FolderInspector;
+  currentPath?: string;
+}
+
+/** One column per status (empty ones too, so cards can be dropped there); pinned cards first, then by name. */
+export function buildBoard(state: OrganizerState, now: number, context: BoardContext): BoardColumn[] {
+  return listStatuses(state).map((status) => ({
+    statusId: status.id,
+    label: status.name,
+    isBuiltInLabel: status.isBuiltIn,
+    color: status.color,
+    cards: state.projects
+      .filter((project) => context.resolver.resolve(project, state, now).id === status.id)
+      .sort(byPinnedThenName)
+      .map((project) => toCard(project, state, context)),
+  }));
+}
+
+function toCard(project: ProjectRecord, state: OrganizerState, context: BoardContext): BoardCard {
+  const group = state.groups.find((candidate) => candidate.id === project.groupId);
+  return {
+    ...context.inspector.inspect(project.path),
+    id: project.id,
+    name: project.name,
+    path: project.path,
+    note: project.note,
+    group: group ? { name: group.name, color: group.color ?? DEFAULT_GROUP_COLOR } : undefined,
+    tags: state.tags.filter((tag) => project.tagIds.includes(tag.id)).map((tag) => ({ name: tag.name, color: tag.color })),
+    lastOpened: project.lastOpened,
+    isPinned: project.isPinned,
+    isCurrent: context.currentPath !== undefined && isSamePath(context.currentPath, project.path),
+  };
+}
+
+function byPinnedThenName(left: ProjectRecord, right: ProjectRecord): number {
+  if (left.isPinned !== right.isPinned) {
+    return left.isPinned ? -1 : 1;
+  }
+  return left.name.localeCompare(right.name);
+}

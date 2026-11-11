@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { ColorPicker } from '../colors/ColorPicker';
 import { DomainError } from '../shared/DomainError';
 import { registerSafeCommand } from '../shared/registerSafeCommand';
 import { SectionTarget } from '../shared/TreeTargets';
@@ -9,20 +10,26 @@ export class GroupCommands {
   constructor(
     private readonly groups: GroupService,
     private readonly picker: GroupPicker,
+    private readonly colors: ColorPicker,
   ) {}
 
   register(): vscode.Disposable[] {
     return [
       registerSafeCommand('projectOrganizer.createGroup', () => this.create()),
       registerSafeCommand<SectionTarget>('projectOrganizer.renameGroup', (target) => this.rename(target)),
+      registerSafeCommand<SectionTarget>('projectOrganizer.recolorGroup', (target) => this.recolor(target)),
       registerSafeCommand<SectionTarget>('projectOrganizer.deleteGroup', (target) => this.delete(target)),
     ];
   }
 
   private async create(): Promise<void> {
-    const name = await this.picker.askName();
-    if (name !== undefined) {
-      await this.groups.create(name);
+    await this.picker.createGroup();
+  }
+
+  private async recolor(target: SectionTarget): Promise<void> {
+    const color = await this.colors.pick(target.targetName);
+    if (color) {
+      await this.groups.recolor(requireId(target), color);
     }
   }
 

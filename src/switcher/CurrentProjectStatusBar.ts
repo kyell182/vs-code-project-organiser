@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import { ProjectService } from '../projects/ProjectService';
-import { statusColor, statusLabel } from '../projects/StatusAppearance';
-import { StatusResolver } from '../projects/StatusResolver';
+import { statusColor, statusLabel } from '../statuses/StatusAppearance';
+import { StatusResolver } from '../statuses/StatusResolver';
+import { StateStore } from '../storage/StateStore';
 
 /** Shows the saved name of the project in this window, in its status color; a click opens the quick switcher. */
 export class CurrentProjectStatusBar implements vscode.Disposable {
@@ -9,6 +10,7 @@ export class CurrentProjectStatusBar implements vscode.Disposable {
 
   constructor(
     private readonly projects: ProjectService,
+    private readonly store: StateStore,
     private readonly resolver: StatusResolver,
     private readonly currentPath: () => string | undefined,
   ) {
@@ -23,7 +25,7 @@ export class CurrentProjectStatusBar implements vscode.Disposable {
       this.showUnsaved();
       return;
     }
-    const status = this.resolver.resolve(project, Date.now());
+    const status = this.resolver.resolve(project, this.store.read(), Date.now());
     this.item.text = `$(folder-library) ${project.name}`;
     this.item.color = statusColor(status);
     this.item.tooltip = vscode.l10n.t('{0} · {1} — click to switch project', project.name, statusLabel(status));

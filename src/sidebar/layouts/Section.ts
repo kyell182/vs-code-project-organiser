@@ -1,6 +1,5 @@
-import { ProjectStatus } from '../../projects/ProjectStatus';
+import { Color } from '../../colors/Color';
 import { ProjectRecord } from '../../storage/OrganizerState';
-import { TagColor } from '../../tags/TagColor';
 
 export enum SectionKind {
   Pinned = 'pinned',
@@ -15,8 +14,10 @@ export enum SectionKind {
 export interface Section {
   kind: SectionKind;
   label: string;
+  /** True for labels the extension itself wrote (translated in the UI), false for names typed by the user. */
+  isBuiltInLabel: boolean;
+  icon: string;
+  color?: Color;
   projects: ProjectRecord[];
   id?: string;
-  tagColor?: TagColor;
-  status?: ProjectStatus;
 }

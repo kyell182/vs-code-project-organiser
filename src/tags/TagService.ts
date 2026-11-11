@@ -3,7 +3,7 @@ import { requireById, requireName, requireUniqueName } from '../shared/NameValid
 import { OrganizerState, TagRecord } from '../storage/OrganizerState';
 import { StateStore } from '../storage/StateStore';
 import { mutateState } from '../storage/mutateState';
-import { TagColor } from './TagColor';
+import { Color, requireColor } from '../colors/Color';
 
 const KIND = 'Tag';
 
@@ -17,8 +17,8 @@ export class TagService {
     return [...this.store.read().tags].sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  async create(name: string, color: TagColor): Promise<TagRecord> {
-    const tag: TagRecord = { id: this.ids.next(), name: requireName(name, KIND), color };
+  async create(name: string, color: Color): Promise<TagRecord> {
+    const tag: TagRecord = { id: this.ids.next(), name: requireName(name, KIND), color: requireColor(color) };
     await this.mutate((state) => {
       requireUniqueName(state.tags, tag.name, KIND);
       state.tags.push(tag);
@@ -34,8 +34,8 @@ export class TagService {
     });
   }
 
-  recolor(id: string, color: TagColor): Promise<void> {
-    return this.mutate((state) => (requireById(state.tags, id, KIND).color = color));
+  recolor(id: string, color: Color): Promise<void> {
+    return this.mutate((state) => (requireById(state.tags, id, KIND).color = requireColor(color)));
   }
 
   /** Removing a tag also removes it from every project that carried it. */

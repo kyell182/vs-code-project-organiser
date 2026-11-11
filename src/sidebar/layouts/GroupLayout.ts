@@ -1,3 +1,4 @@
+import { DEFAULT_GROUP_COLOR } from '../../groups/GroupService';
 import { OrganizerState } from '../../storage/OrganizerState';
 import { Layout, LayoutId } from './Layout';
 import { Section, SectionKind } from './Section';
@@ -14,11 +15,16 @@ export class GroupLayout implements Layout {
       kind: SectionKind.Group,
       id: group.id,
       label: group.name,
+      isBuiltInLabel: false,
+      icon: 'folder',
+      color: group.color ?? DEFAULT_GROUP_COLOR,
       projects: sortByName(state.projects.filter((project) => project.groupId === group.id)),
     }));
     const ungrouped: Section = {
       kind: SectionKind.Ungrouped,
       label: 'Ungrouped',
+      isBuiltInLabel: true,
+      icon: 'folder-opened',
       projects: sortByName(state.projects.filter((project) => project.groupId === undefined)),
     };
     return [...pinnedSections(state.projects), ...groupSections, ...nonEmpty(ungrouped)];
