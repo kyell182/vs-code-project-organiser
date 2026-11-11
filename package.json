@@ -1,0 +1,151 @@
+{
+  "name": "project-organizer",
+  "displayName": "Project Organizer",
+  "description": "Save projects, organize them in groups, label them with colored tags and see their status at a glance. Open any project with one click.",
+  "version": "0.1.0",
+  "publisher": "your-publisher-id",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "project",
+    "manager",
+    "organizer",
+    "tags",
+    "groups"
+  ],
+  "main": "./out/src/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "projectOrganizer",
+          "title": "Project Organizer",
+          "icon": "media/activity-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "projectOrganizer": [
+        {
+          "id": "projectOrganizer.projects",
+          "name": "Projects"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "projectOrganizer.projects",
+        "contents": "No saved projects yet.\n[Save Current Project](command:projectOrganizer.saveCurrentProject)\n[Add Project Folder](command:projectOrganizer.addProjectFolder)"
+      }
+    ],
+    "commands": [
+      { "command": "projectOrganizer.saveCurrentProject", "title": "Save Current Project", "category": "Project Organizer", "icon": "$(save)" },
+      { "command": "projectOrganizer.addProjectFolder", "title": "Add Project Folder...", "category": "Project Organizer", "icon": "$(add)" },
+      { "command": "projectOrganizer.openProject", "title": "Open Project", "category": "Project Organizer" },
+      { "command": "projectOrganizer.openProjectInNewWindow", "title": "Open in New Window", "category": "Project Organizer", "icon": "$(empty-window)" },
+      { "command": "projectOrganizer.renameProject", "title": "Rename Project", "category": "Project Organizer" },
+      { "command": "projectOrganizer.removeProject", "title": "Remove Project", "category": "Project Organizer", "icon": "$(trash)" },
+      { "command": "projectOrganizer.togglePin", "title": "Pin / Unpin", "category": "Project Organizer", "icon": "$(pin)" },
+      { "command": "projectOrganizer.setStatus", "title": "Set Status...", "category": "Project Organizer" },
+      { "command": "projectOrganizer.assignGroup", "title": "Move to Group...", "category": "Project Organizer" },
+      { "command": "projectOrganizer.editTags", "title": "Edit Tags...", "category": "Project Organizer", "icon": "$(tag)" },
+      { "command": "projectOrganizer.createGroup", "title": "Create Group", "category": "Project Organizer", "icon": "$(new-folder)" },
+      { "command": "projectOrganizer.renameGroup", "title": "Rename Group", "category": "Project Organizer" },
+      { "command": "projectOrganizer.deleteGroup", "title": "Delete Group", "category": "Project Organizer", "icon": "$(trash)" },
+      { "command": "projectOrganizer.createTag", "title": "Create Tag", "category": "Project Organizer" },
+      { "command": "projectOrganizer.renameTag", "title": "Rename Tag", "category": "Project Organizer" },
+      { "command": "projectOrganizer.recolorTag", "title": "Change Tag Color", "category": "Project Organizer" },
+      { "command": "projectOrganizer.deleteTag", "title": "Delete Tag", "category": "Project Organizer", "icon": "$(trash)" },
+      { "command": "projectOrganizer.switchLayout", "title": "Switch View (Group / Tag / Status)", "category": "Project Organizer", "icon": "$(list-tree)" },
+      { "command": "projectOrganizer.quickSwitch", "title": "Quick Switch Project", "category": "Project Organizer", "icon": "$(search)" }
+    ],
+    "keybindings": [
+      {
+        "command": "projectOrganizer.quickSwitch",
+        "key": "ctrl+alt+p",
+        "mac": "cmd+alt+p"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        { "command": "projectOrganizer.quickSwitch", "when": "view == projectOrganizer.projects", "group": "navigation@1" },
+        { "command": "projectOrganizer.saveCurrentProject", "when": "view == projectOrganizer.projects", "group": "navigation@2" },
+        { "command": "projectOrganizer.createGroup", "when": "view == projectOrganizer.projects", "group": "navigation@3" },
+        { "command": "projectOrganizer.switchLayout", "when": "view == projectOrganizer.projects", "group": "navigation@4" },
+        { "command": "projectOrganizer.addProjectFolder", "when": "view == projectOrganizer.projects", "group": "more@1" },
+        { "command": "projectOrganizer.createTag", "when": "view == projectOrganizer.projects", "group": "more@2" }
+      ],
+      "view/item/context": [
+        { "command": "projectOrganizer.openProjectInNewWindow", "when": "viewItem =~ /^project/", "group": "inline@1" },
+        { "command": "projectOrganizer.togglePin", "when": "viewItem =~ /^project/", "group": "inline@2" },
+        { "command": "projectOrganizer.openProjectInNewWindow", "when": "viewItem =~ /^project/", "group": "1_open@1" },
+        { "command": "projectOrganizer.setStatus", "when": "viewItem =~ /^project/", "group": "2_organize@1" },
+        { "command": "projectOrganizer.assignGroup", "when": "viewItem =~ /^project/", "group": "2_organize@2" },
+        { "command": "projectOrganizer.editTags", "when": "viewItem =~ /^project/", "group": "2_organize@3" },
+        { "command": "projectOrganizer.togglePin", "when": "viewItem =~ /^project/", "group": "2_organize@4" },
+        { "command": "projectOrganizer.renameProject", "when": "viewItem =~ /^project/", "group": "3_edit@1" },
+        { "command": "projectOrganizer.removeProject", "when": "viewItem =~ /^project/", "group": "3_edit@2" },
+        { "command": "projectOrganizer.renameGroup", "when": "viewItem == group", "group": "1_edit@1" },
+        { "command": "projectOrganizer.deleteGroup", "when": "viewItem == group", "group": "1_edit@2" },
+        { "command": "projectOrganizer.renameTag", "when": "viewItem == tag", "group": "1_edit@1" },
+        { "command": "projectOrganizer.recolorTag", "when": "viewItem == tag", "group": "1_edit@2" },
+        { "command": "projectOrganizer.deleteTag", "when": "viewItem == tag", "group": "1_edit@3" }
+      ],
+      "commandPalette": [
+        { "command": "projectOrganizer.openProject", "when": "false" },
+        { "command": "projectOrganizer.openProjectInNewWindow", "when": "false" },
+        { "command": "projectOrganizer.renameProject", "when": "false" },
+        { "command": "projectOrganizer.removeProject", "when": "false" },
+        { "command": "projectOrganizer.togglePin", "when": "false" },
+        { "command": "projectOrganizer.setStatus", "when": "false" },
+        { "command": "projectOrganizer.assignGroup", "when": "false" },
+        { "command": "projectOrganizer.editTags", "when": "false" },
+        { "command": "projectOrganizer.renameGroup", "when": "false" },
+        { "command": "projectOrganizer.deleteGroup", "when": "false" },
+        { "command": "projectOrganizer.renameTag", "when": "false" },
+        { "command": "projectOrganizer.recolorTag", "when": "false" },
+        { "command": "projectOrganizer.deleteTag", "when": "false" }
+      ]
+    },
+    "configuration": {
+      "title": "Project Organizer",
+      "properties": {
+        "projectOrganizer.openInNewWindow": {
+          "type": "boolean",
+          "default": false,
+          "description": "Open projects in a new window instead of the current one."
+        },
+        "projectOrganizer.inactiveAfterDays": {
+          "type": "number",
+          "default": 30,
+          "minimum": 1,
+          "description": "A project without a manual status becomes 'Inactive' when it has not been opened for this many days."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "test": "npm run compile && mocha \"out/test/*.test.js\"",
+    "test:integration": "npm run compile && node ./out/test/integration/runIntegration.js",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^20.17.0",
+    "@types/vscode": "^1.90.0",
+    "@vscode/test-electron": "^2.4.1",
+    "@vscode/vsce": "^3.2.1",
+    "mocha": "^10.8.2",
+    "typescript": "^5.6.3"
+  }
+}
